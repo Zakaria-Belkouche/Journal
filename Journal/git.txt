@@ -157,7 +157,7 @@ git merge <branch>		- merge target branch into current branch. (Pulls the commit
 						Rebase vs Merge
 
 				Merge						Rebase
-- Safe and friendly					   - Rewrites history asif branch was always built of latest 															commit
+- Safe and friendly					   - Rewrites history asif branch was always built of latest commit
 - Preserves History					   - Clean timeline. No merge commits. Cleans up branch 
 - Creates a new commit (So can see where branch was joined)- Cleans up branch before opening a pull request
 - Good for team workflows				   - Brushing up git history before sharing it
