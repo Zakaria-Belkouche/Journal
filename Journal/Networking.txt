@@ -1,0 +1,118 @@
+							Networking
+
+				
+
+						Introduction to Networking
+
+
+
+
+Network: A Network is a group of devices connected to each other allowing them to share information and resources.
+
+LAN: Local Area Network. (Connects Devices in a home together for example)
+
+WAN: Wide Area Network. (Connects large areas together. The Largest WAN is the internet)
+
+						Importance of Networks
+- Enables communication between devices. 
+- Facilities sharing of files, printers and more
+- Critical for browsing, streaming and communication.
+- Backbone for app connectivity. 
+
+(When you use an app, your device sends data to a server over a network. Server processes the data and sends back response)
+
+						Networking in DevOps
+
+Server Interaction: Enables communication between servers and applications
+Deployment: Critical for launching, updating and managing applications
+Management: Enables Monitoring and Managing of Infrastructure
+Optimisation: Enhance performance by ensuring data flows smoothly between devices and servers.
+
+
+						Key Networking Components
+
+- Switches: Connects multiple devices within the same network. Manages data flow within a LAN
+- Router: Direct traffic between different networks. Connects Networks. (Home network - Internet)
+- Firewalls: Monitors and controlls incoming and outgoing network traffic based on pre-determined security rules.
+
+
+						IP addressing
+
+- Unique Identifer for each device on network. Allows devices to locate, Identify and communicate with one another.
+
+				Ipv4					Ipv6
+- Most common						- 128 bit numbers. eight groups of four hexadecimal digits.
+- ex: 192.168.0.5 (32-bit numbers) (numbers < 255)	- Much larger pool of unique adresses
+- Ipv4 addresses becoming scarce (internet growing)	- Improved security features
+							- Simplified adress assignment
+
+						MAC Addresses
+MAC: Media Access Control Address
+- Unique ID assigned to network interface
+- Each device on network has own unique MAC address
+- 48-bit address ex: 00:1A:2B:3C:4D:5E
+- Operate at the data link layer of the OSI model. ?????
+- Help Devices ID each other on the local network.
+- Play a critical role in network communication and security. 
+- Crucial for making sure devices connect to the correct network
+
+
+						Ports and Protocols: TCP,UDP
+
+Ports: Doors on Device. Each door is numbered. Each number is used for specific type of network communication
+	Port 80: Word traffic (HTTP)
+	Port 443: (HTTPS)
+Ports: Help facilitate communication between devices and make sure data goes to the right place. 
+
+Protocols: Rules of road for data transmission. HTTP, FTP, SNTP.
+	   Ensures Devices can communicate effectively by following the same set of rules. (Like Languages)
+
+						So
+
+Ports Ensure data gets to right application on your device and Protocosl ensure Devices can understand each other
+										(Using same rule set)
+
+
+					The 2 Main protocols. TCP and UDP
+
+
+
+					Transmission control protocol (TCP)
+
+TCP: A fundemental Protocol. 
+
+TCP is the postman of the internet. Ensures data from one devices reaches another device accurately and in correct order.
+
+Characteristics: 
+- Connection Oriented. Before data is sent, connection is established
+- Requires "Handshake". 
+- Reliable data transfer. (Ensures all data sent is recieved correctly. If data lost/corrupted, TCP will resend)
+- Error Checking
+
+Functions (usecases):
+- Ensures data is delivered in order
+- controls flow of data to prevent congestion and ensure smooth error free communication
+- Bidirectional communication: When devices need to exchange data back and forth. (web browsing, email...)
+- Essential for any application where reliable delivery of data is essential. 
+
+
+						User Datagram Protocol (UDP)
+
+UDP is a simple protocol used to send and recieve data
+
+Characteristics: 
+- Connectionless (No formal connection established between sender and reciever. Each packet sent independently)
+- Simple protocol to send and recieve data
+- no prior communication needed. Benefits: Data sent immedietely. Drawbacks: No Gaurantee data will reach destination
+- Fast but less reliable
+
+Functions (Usecases):
+- Suitable for real-time applications (ex: Video Streaming, Gaming) Speed more important than reliability.
+- DNS (Anything DNS related uses UDP behind the scenes)
+- VPN (VPN uses DNS because faster and works better for streaming applications)
+
+
+					
+							OSI Model
+
+The OSI model is a conceptual framework explaining how data travels through a network, divided into 7 layers. from physical hardware up to the applications you use.
