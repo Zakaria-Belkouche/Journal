@@ -207,4 +207,56 @@ Name servers: Load DNS settings and configirations.
 	      Authoratative name servers: Hold actual DNS records. When queried they provide IP address for domain name
 	      Recursive name servers: Do not hold DNS records. When Queried, forward request to other name servers.
 				      Can also cache info they recieve to speed up future queries. 
-	     					
+
+
+
+Zone Files: - Stored inside name servers. Stores domain name information in organized and readable way. 
+	    - Helps name servers answer queries about how to get to a domain.
+	     				
+
+
+DNS Records: - Zone files are composed of multiple Resource records
+	     - Each resource record contains info: Hosts, TTL (Time to live), Class, Type, Data, NS, Data (IP)
+Types of DNS Records:
+	A : Maps domain to IPv4			(Address Record)
+     AAAA : Maps domain to IPv6			(Address Record)
+     CName: An Alias. Allows you to point multiple domain names to the same IP address 
+        MX: Used for setting up emails etc	(Point to mail server responsible for recieving domain)
+       TXT: Used to verify that you own a domain. Used for Verification Records. 	(Allows us to insert text into DNS)
+	
+
+
+
+							DNS Resolutions:
+
+The process of converting domain names into IP address's. 
+
+						DNS Hierarchy and Distribution
+
+How DNS actually works. The 4 steps. 
+						
+1. DNS ROOT : 			Keeps information on where to find top level domains
+2. Top Level Domains: 		The main Domains... .com .org .net
+3. Authoratitive name servers:	Hosts zones for domains
+4. Domains:			Each domain has it's zone file. 
+									The DNS resolver is in the middle of all of this
+
+							NOTICE
+
+It's Important for a DEVOPS engineer to understand Networking, Especially DNS, as we are often required to debug network related issues. 
+
+
+Domain Registrar : Allows you to purchase and Register Domains. 
+DNS Hosting Provider : Operated DNS Nameservers that host DNS Zones. Allows you to manage DNS records within these zones. 
+
+If Domain Registrar and DNS hosting provider are same companies, then the Nameservers and DNS zones are hosted automatically.
+If they are different companies, need to provide name server info on where DNS zone is already Hosted. 
+
+
+
+						DNS Tools for Debugging
+
+Linux Commands for debugging: 
+
+nslookup [domain]
+dig [domain]
