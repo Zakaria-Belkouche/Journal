@@ -1,0 +1,174 @@
+ls: Lists all files in a directory
+
+-a > including hidden files
+-l > all details
+-1 > spaced out by lines
+-R > Recrusively
+
+
+
+cd: Change Directory
+
+.. > Moves back 
+~ > home directory
+. > root directory
+
+
+
+find: Find stuff
+
+- size   n[bckw...] (units)
+- name   (Specific name)
+- type   (d, f)
+- perm   (match permissions 644)
+- user	 (files owned by user)
+- group  (files belonging to group)
+- exec   (Run command on each file) [find . -name "*.tmp" -exec rm {} \;]  > this will find files and remove them
+{} > place holder for 'file'. '\;' > ends the command
+- empty  (find empty files or dirs)
+
+
+
+grep: looks through text files and shows all lines that contain a word.
+
+grep "word" file
+-i  > case insensitive search
+-r  > recrusievely search through all files in current dir
+-v  > Opposite. Show lines that don't match the "word"
+
+
+uniq: report or omit repeated lines THAT ARE CONSECUTIVE
+
+-c > prefix lines with no. of occurances
+-u > only print unique lines
+
+
+
+sort: sorts lines of text files
+
+
+strings: collects only the human readible lines with at least 4 (unless otherwise specified) human readible consecutive characters.
+
+-n   > readible at least n characters long
+
+
+
+base64   > Base 64 enocdes data which may contain any character into easily readible letters.
+
+echo 'xyz' | base 64
+-d     > (Decodes) 
+-i     > ignore non alphabet
+
+
+
+
+tr   > Translate. It replaces set of characters with another set
+
+example:  tr 'A-Za-z' 'B-ZAb-za'  > Rotates all letters, uppercase and lowercase 1 to the right. 
+
+
+
+
+cp   > Copy.
+
+cp [SOURCE] [DEST]
+-t    > copy all sources into directory
+
+
+
+mv  > Move/Rename a file
+
+if destination is a new filename it will rename. If dest is directory, it will move. 
+
+
+
+Compression/Decompression/HexDumps
+
+Hexdump > Binary code in a human readable files
+
+Compression: Different types of Compressions.
+
+CompressionType		Extension	Optimized For				Decompress With
+gzip			.gz		Speed + decent compression		gunzip or gzip -d
+bzip2			.bz2		Better compression (slower)		bunzip2
+xz			.xz		Maximum compression (very slow)		unxz
+zip			.zip		Cross-platform, common on Windows	unzip
+tar			.tar		Bundling files (not compressed!)	tar -xf
+tar.gz			.tar.gz		Bundle + gzip				tar -xzf
+
+tar extracts out of (zip folder) and unpacks. x > extract   f > file ... 	Hence: 		tar-xf
+
+Reminder: Files must end in appropriate extension in order to decompress.
+
+
+
+file [name]   >  State file type. Useful for understanding how to decompress!
+
+
+
+
+ssh   > Securely connect and manage remote computes with a Linux OS. 
+
+-i   > identity file (ssh address file)
+-l   > User to login by 
+-p   > Port to connect to
+
+
+
+nc   > similar to ssh but instead of full connection, allows to send/recieve raw data to specified host and port
+
+nc [host] [port]
+
+
+
+
+openssl    > SSL is a protocol that encrypts data sent over internet/network. SSH has it's own built in encryption.
+
+example:    echo 'hello' | openssl s_client -connect [address:port]
+
+
+
+
+chmod     > Change permissions of a file
+
+-R   > Recrusively
+
+
+wc	  > Word/line count
+
+-l   > lines
+-w   > words
+-b   > bytes
+
+
+
+awk	  > can print specific columns of txt files.  
+
+
+
+command	  > runs original system version of a command, ignoring shell built ins, functions, aliases. (lesser known)
+
+
+
+						Environment Variables
+
+PATH			> List of directories Bash uses to search for commands 
+HOME			> Current user’s home directory (e.g., /home/zakaria)
+USER			> Username of the current user
+SHELL			> Path to the default shell (e.g., /bin/bash)
+PWD			> Present working directory (where you are right now)
+OLDPWD			> Previous working directory
+EDITOR			> Default text editor (often vim, nano, or code)
+LANG			> Language/locale settings (e.g., en_US.UTF-8)
+LOGNAME			> Name of the user currently logged in (same as USER usually)
++More
+
+to list all current environemt variables:
+
+printenv
+
+
+
+read [argument] [what to read]			> Read's user input or given file. [what to read] is set as a variable
+													automatically
+-r						> don't interpret \ as new line, just read the text as it.

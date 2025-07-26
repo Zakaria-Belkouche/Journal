@@ -1,0 +1,233 @@
+						Git Hub. Here we go.
+
+Git stores code. It allows teams to collabarate, build, test, ship and recover (following a break in production).
+
+Git is just for the memory, collabaration and management of projects. It does not execute, build or deploy anything.
+	
+						Version Control
+
+- System that tracks changes to code over time. Can undo, inspect (wee who made changes) and collabarate.
+- can go back in time, see history, and even revert if something goes wrong. A time machine for infrastructure and code.
+- Everything starts from git. Pipelines, deployments and infra all kicks off from git repositary. 
+
+					Version control systems. Distributed vs Centralised
+
+- Centralised repositary's such as (SVN) means that everyone works on same piece of code on the same server. If server 
+  goes down, it will be a major disaster. Can't update, can't code, can't work... Merge conflict wars etc. 
+
+- Instead of relying on 1 server, every dev has a full copy of the repositary including the entire history. 
+  So you can work offline, go back in history, branch, then can merge changes later when the time is right. 
+  Everyone essentially has their own copy which they can safely make changes to and decide when to merge it. 
+  Every commit is a snapshot. If you mess something up, you just go back in time. Literally. 
+  Redifined how DEVOPS teams collaberate at scale.
+
+						More about Git	
+
+- When you commit changes, git does not just save the new changes and overwrite the file. No. 
+  It saves a whole new full snapshot of file.  
+- In git an "object" is a piece of data (file, folder or snapshot of a commit) that git has stored. Each object
+  is stored with a unique ID (hash). If object has changed it will store under new hash. If object is the same but
+  is saved again, the hash will remain unchanged. So git checks the file contents, not the file name. 
+- A "commit" is a saved snapshot of your project at specific time. 
+
+						The terminology:
+
+Repository > A Git Project (tracked folder with a .git directory)
+Commit  > A snapshot of your files and metadata
+Branch  > A movable pointer to a specific commit (e.g., main, dev, feature/login)
+Remote  > A reference to an external Git host (like GitHub). Usually named origin
+Staging Area  > Also called the Index. It is a buffer between working directory and repo you plan to commit.
+Blobs   > "Binary Large Object" - stores the actual content of files (just the data, no filename/path)
+Trees   > Stores filenames, file paths, and pointers to blobs and other trees. Represents a directory snapshot
+Refs    > Pointer to a commit: branches (refs/heads), tags (refs/tags), and special ones like HEAD.
+Head    > Pointer to the current branch or commit you're working on
+Index   > The actual file .git/index, a binary file that holds the staging area info
+Object Store > .git/objects/ - where Git stores all blobs, trees, and commits by SHA hash
+Tag     > A ref to a specific commit, often used for marking releases. (V1.xyz)
+
+						The Git Directory
+
+- .git/refs/			> tags and branches
+- .git/objects/			> all your commits, blobs, trees
+- .git/config			> repo-specific settings
+- .git/HEAD			> current branch pointer
+- .git/index			> staging area (next snapshot to commit is built here)
+
+The .git folder holds everything Git needs to track your projects history. It turns your folder into Git Managed Project
+
+
+						Git Common Commands
+
+git init - if repo is not being tracked by git, this command creates git repo with .git/ and starts tracking
+git add  - moves changes into the staging area
+git commit - (checkpoint. Savepoint). Takes files from staging into repo as new Snapshot.
+git status - shows whats going on. changes, what stage etc. (Very important, use constantly)
+git log  - shows commit history. Shows who broke something
+git diff - show what changed between working files, staging areas, or commits. 
+git config - set user/email . For setting up git the first time
+git help <command>  - the git manual
+git clone - copy a remote repo onto machine (maybe from github or wherever)
+git rm  - removes files from git that are being tracked
+git mv - rename files (but history is still preserved)
+git restore - undo file changes (without rolling back a full commit)
+
+
+					The 3 Areas of Git (How git Works)
+
+1. The working Directory       > Where you actively edit files. (Python script, terraform module, anything)
+2. The Staging Area / Index    > Where you put files that you are preparing to commit
+3. The Repository (.git)       > (The Memory) git commit moves files from staging into the repo as a new snapshot.
+
+
+					Viewing History
+
+git log  			- see commit history
+git log --oneline --graph       - Visual Summary
+git log --oneline --graph --all	   - The GOAT
+git show <commit>		- View history of specific commit
+git diff 			- compare unstaged changes vs last commit
+git diff --change		- compare staged vs last commit (here is what's about to be committed)
+git blame <file>		- show who last changed each line
+git reflog 			- shows every HEAD movement. Even deleted and reset stuff.
+
+
+Difference between 'HEAD' and 'Pointer'
+
+o---o---o  ← commits
+        ↑
+      main        ← branch pointer
+        ↑
+       HEAD        ← "you're here"
+
+
+
+							GitHub
+
+Git is not Github (obviously). But, Git and GitHub do work together. 
+
+			Git						GitHub
+		
+- Version control tool that runs on your machine		- A platform. A cloud Service
+- Does not require internet. Can work offline (CLI based) 	- Hosts your repo online so you can collab with others
+- Local to you							- Shared whiteboard for team collab. Works Online
+								- Can use alternatives (gitlab, bitbucket etc.)
+
+
+
+				Chapter 3: Branching, Merging and Conflict resolutions
+
+
+							Branching
+
+What is a branch:
+
+A branch is like a parallel timeline of your project.
+
+It's a pointer to a specific commit — and as you add new commits, the branch moves forward with you.
+
+So instead of messing with your main project directly (main or master), you can create a separate line of work, 
+make changes, test ideas — without risk.
+
+
+- Lets you work on multiple things at once without messing up main project and without team collisions.  
+- want to try a new feature, test a change, fix a bug? Just start up a new branch. 
+
+git branch			- list/create branches 
+git switch -c <branch>		- Modern way to do the same thing above ^^
+git switch <branch>		- switch to existing branch
+git branch -d <branch>		- delete branch
+
+
+							Merging
+
+Combine Changes from one branch to another. (Merging branch to live branch)
+
+git merge <branch>		- merge target branch into current branch. (Pulls the commit from target branch)
+				- Fast forward merge: When nothing changed on main branch git will just	move the pointer
+				 (points to specific commit) forward.
+				- Recursive Merge (True Merge): done if main commit has been changed.
+				  This will create a merge commit that ties both history's together. 
+				  If files were edited on both sides, git might not know what to do. So we need to fix
+				  this manually. 
+
+
+
+					Chapter 4: Rebase, Stash, Cherry-Pick							
+						
+						Rebase vs Merge
+
+				Merge						Rebase
+- Safe and friendly					   - Rewrites history asif branch was always built of latest 															commit
+- Preserves History					   - Clean timeline. No merge commits. Cleans up branch 
+- Creates a new commit (So can see where branch was joined)- Cleans up branch before opening a pull request
+- Good for team workflows				   - Brushing up git history before sharing it
+							   - Never Rebase Shared branches!
+
+
+
+						Git Stash & Pop
+
+Very useful for quick switchs. If team-mate asks you to fix bug on main so you want to save work etc.
+Great for "I'm not ready to commit, but I need to move"
+
+git stash 			- temporarily save uncommitted changes
+git stash list 			- view all stashes
+git stash apply			- reapply latest stash (but still keeps the stash). Perfect for re-using work
+git stash pop			- reapply the stash and delete it right after.
+
+
+					Reset, Revert and Cherry-Pick
+
+				
+							Git Revert
+
+ "safer one"
+- creates a brand new commit that undoes the effects of the previous commit. 
+- Does not mess with the History. If something is broken in main, we use this without re-writing anything.
+
+							Git Reset
+
+3 types. Soft	Mixed	Hard
+
+Soft: Move's pointer back but keeps changes staged
+Mixed: Move's pointer and also unstages your changes
+Hard: Nukes everything. Nukes your changes completely. Great locally but dangerous on shared branches (re-writes history)
+
+
+							Git Cherry-Pick
+
+- Take certain commit from another branch and apply it to current one.
+- Useful for hotfixes or targeted changes. (If fix a bug on main, and want to pull same commit into release)
+
+
+
+							Connecting to Github
+
+- git remote add origin <url>		> Links local Repositary to Github. Tells git where to push and pull from
+- git push -u origin main 		> send your work to the cloud
+- git pull 				> bring down changes from GitHub
+- SSH vs HTTPS				> SSH = Secure, no Passwords HTTPS = easy but asks for credentials everytime
+					  Example: ssh -T git@github.com	
+					  The -T just says we don't need Shell/Terminal access.
+
+
+
+						Forks and Pull Requests
+
+Fork = Your own copy of someone else's repo (on github)
+1. Clone the forked repo onto your local machine
+2. Make changes -> Push to your Fork
+3. Open a Pull Request to Propose your changes
+4. Changes reviewed, commented on and perhaps even commited to Main Branch!
+
+
+
+					Pre-Commit Command and safety
+
+pre-commit Run's Linters/tests before commiting (Make sure code is working as expected)
+
+
+.gitignore is a special file where you list files or folders that Git should ignore
+
+
+					REMEMBER TO ADD PRE-COMMIT COMMANDS

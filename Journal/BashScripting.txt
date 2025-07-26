@@ -1,0 +1,293 @@
+This is a guide on bash scripting:
+
+How to make a Script:
+
+
+1. script files must end in .sh
+2. Assign executable permissions to the file using chmod
+3. will need to navigate to the correct directory to utilise command
+	Unless file is already found within the $PATH
+4. Can modify  script location to be in the $path by:
+
+	export PATH="$PATH:/filepath"    >  (This will add it to the end of the PATH)
+
+5. Or can add the script permemnantly by moving it into the /bin/zshrc file like this:
+
+ export PATH="$PATH:/filepath" >> /.zshrc     (May be some slight errors in these lines of code)
+
+
+Ok lets run our script. 
+
+./script.sh paramater1 bye ...
+
+Writing a Script:
+
+Must start with the 'shabang'.
+
+Example:
+
+1.  #!/bin/bash     				> (This tells the script which language to use)
+2.  echo "parameter 1: $1"     			> $1 means paramater1 in the command line code
+3.  echo "parameter 2: $2"     			> $2 means paramater2 which in this case, is: bye
+4.  echo "All parameters: $@"  			> $@ means all parameters
+5.  greeting="Hello World!"    			> Setting a Variable
+6.  echo $greeting             			> echo's the variable
+7.  fruits=("apple" "bananna" "orange")		> A variable called fruits holding an ARRAY
+8.  num1=5
+9.  num2=10
+10. result=$((num1+num2))			> arithmetic expansion can be done by $((...)) 
+ 
+11. if [ $age -gt 18 ]			> conditions formed with (eq = equals) (ne = not equal to)
+12. then				> (le/ge = less/more than or equal to) (lt = less than) (gt = greater than)
+13. echo "you are an adult!"		> code block to be executed
+14. fi					> signifies the end of the if block
+
+
+15. grade=85						
+16. if [ %grade -ge 90 ] && [ $grade -le 100]		> && = AND  || = OR
+17. then
+18. echo "Excellent!"
+19. fi						> This command will not echo Excellent! as both conditions not met
+
+20. name ="Alice"
+21. if [ "$name" == "Alice" ]			> [ ] brackets required as it's actually a command called "test"
+22. then					> it is the same as if test "$name" = "Alice"
+23. echo 'Hello Alice!'
+24. else					> essentially means 'otherwise'
+25. ...						> code block if condition is false
+26. fi						> Compare strings:  ==  
+
+Can chain multiple if statements together.
+
+27. #!/bin/bash
+28. score=85
+29. if test $score -ge 90
+30. then 
+31. echo 'Excellent!'
+32. elif [ $score -ge 80 ]					> Adds another condition if the first condition is false
+33. then
+34. echo 'Good!'
+35. else
+36. echo 'Better luck next time!'
+37. fi
+
+
+						NESTED IF STATEMETNS
+
+#!/bin/bash
+
+age=18
+grade=85
+if [ $age -ge 18 ]; then					> semi colon is the same as starting a new line. 
+echo "you are elgibile based on age"
+	if [ $grade -gt 80 ]; then				> nested. Self Explanatory.
+	echo you are elgibile for the scholarship
+	else
+	echo sorry your grade is too low.
+	fi
+else
+echo "sorry, you are not eligible due to age"
+fi
+
+
+
+						While Loops: 
+
+#!/bin/bash
+count=1
+while [ $count -le 5 ]
+do						> Says what to do while test command is true.
+echo "Count:$count" 				> code to be executed. Will continue to execute until while is false
+((count=$count+1))				> adds 1 for each iteration of the while loopi		
+done						> while loops end with a "done"
+
+
+Little more complex while loop:
+
+#!/bin/bash
+fruits=("apple" "bananna" "orange")	> ARRAY's are just variables which contain lists. enclosed in ()
+index=0					> Arrays in bash start from 0. 
+while [ $index -lt ${#fruits[@]} ]	> ${#fruits[@]}  {} = group variable  # = number of things  [@] = everything
+do
+echo "Fruit: ${fruits[$index]}"	> prints to screen.  Fruit: variable 
+((index++))
+done
+
+Ok, I'm getting this.
+
+
+					Next. For Loops.
+
+#!/bin/bash
+
+for variable in sequence
+do
+#codeblock to be executed
+done
+
+
+#!/bin/bash
+for (( i=1; i<=5; i++ ))
+do
+echo "Number: $i"
+done
+
+or
+
+#!/bin/bash
+for number in ${seq 1 5}
+do
+echo "Number: $number"
+done
+
+					Break and Continue
+
+can interrupt a loop or skip iterations when necessary.
+
+for (( i=1: i<=5; i++ ))		> Arithmetic sequence 1,2,3,4,5
+do
+	if [ $i -eq 3 ]
+	then
+	break/continue			> break will stop the loop. Continue will just skip the current iteration
+	fi
+echo "Number :$i"
+done
+
+
+#!/bin/bash
+count=1
+while true
+do
+echo "count: $count"
+((count++))
+	if [ $count -eq 4 ]
+	then
+	break
+	fi
+done
+
+
+			
+	Functions:  Functions are just saved lines code. Makes ur code modular, and more streamlined.
+
+function_name() { #code block to be executed }
+
+#!/bin/bash
+
+greet_person() {					> Makes Function
+local name="$1"	
+echo "Hello, $name!"
+}
+
+greet_person Sam					> Runs function
+
+
+
+Read command within functions (User Inputs)
+
+#!bin/bash
+greet_user() {
+echo "what is your name?"
+read name						> Waits for user input, reads it and creates temp variable
+echo "Hello, $name!"					  (Read command can also read from files)
+}
+
+
+					Handling Bad Data
+
+#!bin/bash
+
+validate_age() {
+
+local age=$1			IMPORTANT:	> [[ xyz ]] allows advanced conditional expressions in bash
+
+	if [[ ! $age =~ ^[0-9]+$ ]]; then	> ! means (not). =~ checks if value on left matches pattern on right
+	echo "Invalid age"			> regex pattern check starts with ^ and ends with $
+	return 1				> return is an output msg. return 0 is success. return 1,2,.. fail
+	fi
+
+	if (( age < 18 )); then			
+	echo "Sorry, must be at least 18."
+	return 1
+	fi
+
+echo "Congratulations! You are eligible."
+return 0
+}
+
+echo "Please enter your age: "
+read user_age
+
+validate_age "$user_age"
+
+exit_code=$?					> $? holds exit status of last command that was run
+
+if (( exit_code != 0 )); then			 
+	echo "Input validation failed."
+fi
+
+
+
+				Error Handling using Exit Codes
+
+$?			> Variable for the Exit Code
+
+exit 0/1		> exit is used to stop function/script early. when code is !0, Error has occured
+
+
+set 			> Great tool for error handling!
+
+-e 			> if exit code is non -, exit the script immedietly. 
+			( not all exit codes of !0, warrant stopping the entire script )
+
+-u 			> forces script to stop if encounters un initalized variable. 
+			(Prevents scenarios where missing data produces incorrect results)
+
+-x			> Print each command before running it (good for debugging)	set +x   > ends the chain
+											(good for debugging parts)
+-o pipefail		> exit if any command in pipeline fails. 
+
+Can combine:     set -eu 	set -eo		set -euo
+
+
+
+					Reading Files
+
+read_file() { 
+local file_path="$1"
+
+while IFS= read -r line; do			> IFS=   Doesn't split lines based on spaces \ or tabs. 
+echo "$line"					(IFS is Internal Field Seperator. It's a special environment variable)
+done < "$file_path"				> Shell redirections to stdin work from outside the loop.
+					 	read, reads from stdin by default.
+}				
+
+
+
+					File CheckSums
+
+File checksums are like fingerprints but for files. Each file has it's own Checksum.
+
+#!/bin/bash
+
+calculate_md5sum() {
+local file_path="$1"
+md5sum "$file_path"				> md5sum command generates the Checksum of a file
+}						> can also use sha256sum command to generate checksum for file.
+
+			Can Compare Checksums too...
+
+#!/bin/bash
+
+compare_checksums() {
+local checksum1="$1"
+local checksum2="$2"
+if [[ "$checksum1" == "$checksum2" ]]; then
+echo "Checksums match. File is intact."
+else
+echo "Checksums do not match. File integrity compromised."
+fi
+}
+
+compare_checksums "xyz" "xyz"
+
