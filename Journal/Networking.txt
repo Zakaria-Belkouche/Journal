@@ -260,3 +260,84 @@ Linux Commands for debugging:
 
 nslookup [domain]
 dig [domain]
+
+
+						/etc/hosts
+
+- A local file on computer. 
+- Takes priority over DNS for specific entries.
+- Maps domain names to IP addresses that you set.
+- Computer always first checks the /etc/hosts file.
+- Example: [IP] [Domain Name] 127.0.0.1 example.com 
+
+
+							Routing
+
+- The Process of figuring out the best path for your data to travel across networks. Like a GPS
+- Routing makes sure that data reaches destination quickly and efficiently. Without it, Data may get lost. 
+- It is fundemental for the internet to run properly. 
+
+Routers determine the best path using routing tables (like a map).
+
+					Why is Routing important to understand
+
+When you have a good effective route, this ensures data packets take best path so reduce latency and improves network performance
+
+Ensures Reliable application delivery. Crucial for delivery applications and services. 
+
+Crucial for managing complex infrastructures. 
+
+						
+
+						Static vs Dynamic Routing
+
+			
+				Static						Dynamic
+
+- Routes manually set up by network admins.		- Uses algorothims and complex protocols to find best path for data 
+- Give data fixed map to follow.			- Keeps data moving efficiently even if network conditions change
+- Doesn't adapt well					- Automatically adjusts routes based on network conditions
+- Fixed paths set by network admins			- Scalable and Adaptable
+- Simple but not scalable				- Routing Protocols
+
+
+
+							Routing Protocols
+
+- Automate process of determining best path for data to travel across a network.
+- Enhance Network Efficiency. Improves network performance. Optimised Delivery Service. 
+- Uses algorithims to figure out best path, and adapt to unexpected events. (Network going down)
+
+2 Routing Protocols
+
+		OSPF (Open Shortest Path first		)			BGP (Border Gateway Protocol)
+
+- Open Shortest Path First					- Used to route data between different autonomous systems 
+- Finds shortest path for the data to travel			- Allows network admins to define routing policies
+- Can quickly recalculate routes when changes in network happen
+
+
+
+							Subnetting	
+
+Subnetting: Dividing one large network into smaller more managable sub networks
+
+- Improves network management
+- Improves efficiency in handling different networks
+- Helps organise and manage IP addrress more efficiently. 
+
+						Subnet Masks and Calculations
+
+Basically, a subnet mask tells ur device which IPs are on the same network and which Ips need to be routed externally. 
+
+- Divide an IP address into network and host portions. 
+- Helps routers determine which part of IP address is the network address and which part is the host address
+- For example: (First 24 bits are network part and remaining 8 bits are for Host Addresses)
+- The side notation of the subnet mask for the above example will be /24. 
+
+
+
+					CIDR (Classless Inter-Domain Routing)
+
+- A method for allocating IP addresses and routing IP packets. 
+???????
