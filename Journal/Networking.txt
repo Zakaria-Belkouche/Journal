@@ -115,4 +115,56 @@ Functions (Usecases):
 					
 							OSI Model
 
+
+
 The OSI model is a conceptual framework explaining how data travels through a network, divided into 7 layers. from physical hardware up to the applications you use.
+
+Without a standard model, applications must understand the underlying network. Imagine having different versions of app for 
+wi-fi, Ethernet, fiber etc. 
+
+Simplified Network Equipment Management, because everything speaks the same language. 
+
+Decoupled innovation: Innovations can happen in each layer of model independently without affecting the entire system. 
+
+
+Layer 7: Application 
+
+- Provides Network services given directly to applications
+- Uses HTTP, FTP, SMTP... (Protocols)
+- End User Layer (What the user essentially 'sees' or 'interacts' with)
+
+Layer 6: Presentation Layer (otherwise known as syntax layer)
+
+- Data translated into readible format and encryption handled
+- Ensures data being sent is in usable/readable format
+
+Layer 5: Session Layer:
+
+- Manage sessions between different applications? Like TLS, Sockets and more
+- Establish, Terminate, maintain and manage connections. (Knowing when to Maintain the connection/end it etc.)
+
+Layer 4: Transport Layer: TCP/UDP Protocols
+
+- End to end communication and data integrity are managed.
+- Responsible for providing reliable data transfer services to upper layers
+- Ensures data packets will arrive in the correct sequence
+
+Layer 3: Network Layer: 
+
+- Routing and data packets managed. (IP, MAC address)
+- How is the data going to be sent to Reciptient? Decides best path for data to travel between networks. 
+- Data is organised into packets and rotuers route data packets to destination IP. 
+
+Layer 2: Data Link Layer:
+
+- Node to node data transfer and error detection managed. (Ethernet, Switches, bridges etc.)
+- Ensures data packets sent and recieved correctly between different network nodes. Maintain reliable link between devices
+- MAC adresses, switches, Bridges work here.
+
+Layer 1: Physical Layer:
+
+- Fibers, Wires, Wireless, Hubs. Physical Connection.
+- Transmits raw bit stream over physical medium (wires, wifi etc.) Everyone in the area recieves the data. Like shouting
+
+
+
