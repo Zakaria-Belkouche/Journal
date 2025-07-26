@@ -168,3 +168,43 @@ Layer 1: Physical Layer:
 
 
 
+
+							TCP/IP Model
+
+A much more condensed format of the OSI model.
+
+Layer 4: Application Layer
+
+- Where network applications and their protocols operate
+
+Layer 3: Transport Layer
+
+- Where end to end communication and data transfer happen. (TCP/UDP)
+
+Layer 2: Internet Layer
+
+- Logical addressing and routing data. (IP)
+
+Layer 1: Network Access Layer
+
+- MAC Adresses, Ethernet, Wireless, LAN etc. Encompasses the physical and data aspects.
+
+
+
+
+							DNS
+
+
+DNS is like a contacts list for the internet. 
+If you search google.com, DNS will look through the phonebook for the IP address assosiated with google.com so
+it knows where to take you. 
+
+
+							DNS Components:
+
+Name servers: Load DNS settings and configirations. 
+	      2 types: Authoritative or Recursive
+	      Authoratative name servers: Hold actual DNS records. When queried they provide IP address for domain name
+	      Recursive name servers: Do not hold DNS records. When Queried, forward request to other name servers.
+				      Can also cache info they recieve to speed up future queries. 
+	     					
