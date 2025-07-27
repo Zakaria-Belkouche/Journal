@@ -4,24 +4,24 @@
 
 Repositary = Folder
 gwagwa
+
 Let's gsay I type: ls
 wa
 Thgawe process is as follows:
 
 The OS will look through the $PATH variable for the Binary of the 'ls' command
 
-
 gagaw
+
+waubgwag
 
 /  = Root directory
 
-~  = Home Directory
-
+~  = Homwgae Directory
+g
 .. = move back 1
 
 .  = Where i currently am
-
-
 
 File Permissions
 
@@ -33,6 +33,16 @@ CONFLICTS!!!
 
 HELLO, THIS IS the First change
 
+gwaongwa
+gaw
+g
+aw
+gwa
+g
+aw
+gaw
+g
+aw
 
 waopinbawg
 
