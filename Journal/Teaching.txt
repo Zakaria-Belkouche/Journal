@@ -1,17 +1,17 @@
-1. Hardware speaks binary. 10101010
+1. Hardware sgwagwagwagwapeaks binary. 10101010
 2. Operating systems are like translators. They translate human language to Binary. Like a middle man. 
 							SO HOW DOES IT WORK
 
 Repositary = Folder
-
-Let's say I type: ls
-
-The process is as follows:
+gwagwa
+Let's gsay I type: ls
+wa
+Thgawe process is as follows:
 
 The OS will look through the $PATH variable for the Binary of the 'ls' command
 
 
-
+gagaw
 
 /  = Root directory
 
@@ -39,6 +39,11 @@ waopinbawg
 aetgiopnawgaw
 
 Agiawngaw
+
+
+awibhawug
+
+wuoignabewgwa
 
 
 
