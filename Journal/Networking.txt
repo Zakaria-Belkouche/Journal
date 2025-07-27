@@ -341,3 +341,51 @@ Basically, a subnet mask tells ur device which IPs are on the same network and w
 
 - A method for allocating IP addresses and routing IP packets. 
 ???????
+
+
+						NAT (Network Address Translation)
+
+- Converts private IP's into a single public IP. All devices in local network have different priv IP addresses, but once online, they will share one public IP address. NAT handles this translation. 
+- Handles communication between local network and internet. 
+
+
+				Static NAT:					Dynamic NAT
+
+- 1-1 Mapping.						- Maps private IP to one of many public IP's. (pool of IP's)
+- Maps single private IP address to single public IP.   - Internal device gets public IP to communicate with internet
+							- When done, public ip goes back to pool for someone else to use
+
+
+						Pat (Port Address Translation)
+
+			- Allows multiple devices on local network to be mapped onto single public IP
+			- Assigns different port numbers to each device. 
+			- What most home routers use. Great way to save public IP addresses. 
+
+
+
+						Network Troubleshooting
+
+- Helps keep network in good shape and running smoothly. Prevent small issues from becomming big headaches.
+- Identify and fix network problems. (If server down, or slow network)
+- Minimize downtime
+
+						Common Network Issues
+
+- Connectivity Loss: Hardware failure, cable issues, network problems
+- Slow network Performance: Network Issue
+- IP address conflicts: Causes confusion for the Network
+- DNS resolution failure.
+
+						How to troubleshoot.
+
+- First observe the problem. Network slow? Make sure everything plugged in. 
+- Check router and devices to make sure everything is configured correctly
+- Test with ping command. ping [IP Address]
+- Ping Command is very useful! Tests connectivity between devices. 
+- Traceroute Command. Shows you the the path your data takes to reach the destination.
+- Nslookup (or dig command)
+
+ping [domain or IP address]
+traceroute [domain]
+nslookup [domain]
