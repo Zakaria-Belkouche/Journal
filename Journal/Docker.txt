@@ -66,7 +66,8 @@ Will say:
 - Which image to use
 - Which files to copy into image
 - Which command will be used to RUN the container
-
+- Gives you step by step instructions on how to create a docker image
+- Therefore, allows for repeatable builds
 
 
  							Docker Compose
@@ -93,3 +94,26 @@ docker-compose-.yml
 - Process lvl Isolation (Shared OS)			- Consumes more resources
 - Apps may get confused but typically this is efficient	- Strong isolation. Each VM has own OS
 - High Portability					- Less Portability
+
+
+
+
+						Docker Commands
+
+
+
+1. docker --version				> Tells you what version you are running
+2. docker info 					> Tells u info about docker
+3. docker run [container name]			> Runs a container
+
+
+
+					Dockerfile Commands
+
+1. FROM						> Specifies base image to use for docker image. (Python/Javascript/node)2. RUN						> Executes command in the container. 
+3. COPY						> Copies files from the host machine into the container (Like code)
+4. WORKDIR					> Sets working dir for subsequent instructions / following commands
+5. CMD						> Specfies which commands to run when application starts
+						  This is the final instruction that sets the behaviour of the container
+
+
