@@ -1,0 +1,95 @@
+						Docker and Containers
+
+					
+							Docker
+
+Docker is a tool that lets you package an application and everything it needs — code, libraries, configs — into a small portable unit called a “container.”
+
+- Ensures app runs same way on any machine
+- Can deploy, test, scale applications easily and reliably
+- infrastructure is reproducible and consistent across environments
+
+
+							Containers
+
+A unit which bundles an application with all it's dependencies, ensuring it runs consistently. Containers will include:
+- code
+- run time
+- libaries
+- anything I need including dependencies that I need to run for application.
+- All in one place!!!
+
+							Essential Summary:
+
+---------------------------------------------------------------
+
+Containers are a box where you put your code, all dependencies (python, node.js) and the utensils/environment (OS libaries, runtime, etc.) All in one place. 
+
+So with all of this in the same place, it ensures your application runs the same everywhere because we are shipping the WHOLE environment required to run the app. 
+
+So then what is Docker???
+
+Docker is the tool and platform which makes it easy to work with containers. 
+
+Docker provides:
+
+- A way to build images				> Snapshots of an application. (everything it needs etc)
+- A way to run containers from those images 	> (Containers are just running instances of the image)
+- A central place called DockerHub to store and share your images
+- CLI/API interface making it easy to work with containers from the terminal
+
+
+
+Tradtionally, apps would need to take a subset of the HOST OS (perhaps in a virtual machine) in order to run the application. This was inefficient.
+
+You can run multiple containers ontop of the Operating system which reduces overhead and allows more containers (and therefore applications) to run on the same hardware.
+
+
+Allows for collabaration with team. Write docker file, create docker image, then share with your team. 
+
+						Conclusion
+
+- Simplifies deployment by ensuring consistent environment
+- improved efficiency with lightweight and fast starting containers
+- enhances collabaration by making it easy to share environments
+- Streamlines workflows by integrating seamlessly with CI/CD pipelines
+ 
+------------------------------------------------------------------------------
+
+						How to create Images
+
+						We use a docker file
+
+docker file contains series of instructuions that docker uses to assemble the image.
+
+Will say:
+- Which image to use
+- Which files to copy into image
+- Which command will be used to RUN the container
+
+
+
+ 							Docker Compose
+
+Many apps today use multiple containers and the app requires all of them
+Docker composes lets you define and run multi container docker applications using a simple YAML file
+docker-compose-.yml
+
+
+
+					
+
+						Containers vs Virtual Machines
+
+
+				Containers					Virtual Machine
+
+- Lightweight and efficient isolation of apps		- Allows multiple OS to run on single machine
+- Infrastructure -> Host OS -> Docker Enginer		- Infrastructure -> Host OS -> Hypervisor (Resource allocator)
+- The docker engine runs the containers			- Within each app you have a guest OS
+- Shares underlying OS. (No Guest OS)			- Each vm has it's own resources, libaries etc. for application
+- Startup time is very quick				- Heavy to run, apps completely isolated
+- More resource efficient				- Startup time long
+- Process lvl Isolation (Shared OS)			- Consumes more resources
+- Apps may get confused but typically this is efficient	- Strong isolation. Each VM has own OS
+- High Portability					- Less Portability
