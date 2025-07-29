@@ -105,6 +105,10 @@ docker-compose-.yml
 1. docker --version				> Tells you what version you are running
 2. docker info 					> Tells u info about docker
 3. docker run [container name]			> Runs a container
+4. docker build -t "Image-Name"			> Builds a docker image
+5. docker ps -a (If I want to see all history)	> Shows you what dockers are running
+6. docker network ls				> Lists all current docker networks
+7. docker network create [name of network]	> Creats a local network for docker containers
 
 
 
@@ -117,3 +121,24 @@ docker-compose-.yml
 						  This is the final instruction that sets the behaviour of the container
 
 
+
+
+						Docker Networking
+
+- When containers need to communicate with each other securely and efficiently, networking is cruical. 
+- Networking concepts in docker is essential for managing Container networks efficiently. 
+- Docker networking allows containers (apps) to communicate with one another by sharing data. 
+- Docker network simplifies microservices of an application. Microservices is when different parts of an application      each run indepentely with their own container but communicate with one another seamlessly. Allows you to easily         connect and scale your application as service grows.
+
+						Bridge Network
+
+- The default network mode for containers on the same machine. Containers use their own ip to communicate together.
+
+						Host Network
+
+- Container uses host machine network directly without any isolation. As if container is plugged into home network. 
+- This is useful for apps which need to closely interact with home system
+
+						None Network
+
+- Gives container no network at all. Completely Isolated container. 
