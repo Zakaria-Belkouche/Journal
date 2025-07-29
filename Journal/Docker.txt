@@ -106,9 +106,21 @@ docker-compose-.yml
 2. docker info 					> Tells u info about docker
 3. docker run [container name]			> Runs a container
 4. docker build -t "Image-Name"			> Builds a docker image
-5. docker ps -a (If I want to see all history)	> Shows you what dockers are running
+5. docker ps -a (If I want to see all history)	> Shows you what docker containers are running
 6. docker network ls				> Lists all current docker networks
 7. docker network create [name of network]	> Creats a local network for docker containers
+8. docker images				> Shows you list of docker images
+9. docker logs <container name>			> logs of running container
+10. docker compose up				> Runs the yml file. 
+11. docker push -t "Image-Name"			> Pushes to Dockerhub. Image must be tagged with username/***
+12. docker pull "Image-Name"			> Pulls images from dockerhub onto your local system
+13. docker inspect [Image ID]			> Gives you more details about a specific image
+14. docker rmi [Image ID]			> Removes images that are not being used by running containers.
+15. docker system prune 			> remove all unused docker objects: containers, networks, images. 
+16. docker stop [container ID]			> Stops running containers
+
+When using docker push, images must be tagged with dockerhubusername/Imagename(:tag)
+the :tag is optional. It's if you want to specify which release version you are on. (:v1 :v2 etc.)
 
 
 
@@ -142,3 +154,33 @@ docker-compose-.yml
 						None Network
 
 - Gives container no network at all. Completely Isolated container. 
+
+
+
+						
+						Docker Compose
+
+- A tool used for managing multi container applications. Instead of manually starting and stopping containers one by one, docker compose lets you define all your services in a single file and manage them collectively. 
+
+
+						Yml file.
+
+- Lists all the services your application needs. Says which image to use, which port to expose and how containers should interact with each other. Can spin up entire environment with single command.
+
+- Docker compose automatically creates a custom network for your containers.  
+
+- YOU CAN USE IMAGES SAVED ON ECR within the yml file. 
+
+
+						Docker Registaries
+
+
+
+- Docker Registaries manage, store and deploy your docker images. They are storage and distribution hub for docker image
+- AWS ECR is a Docker image registry managed by AWS. Can push and pull images from AWS ECR.
+- Docker registaries are like online libaries.
+- Public Registries: Share images with the world or use community provided images
+- Private Registries: Like AWS ECR. Secure and restricted registries.
+- Streamline the deployment process. Easily accessed and deployed across multiple environments. 
+- Enhances collaboration. Everyone on team has access to same resources. 
+- Ensures consistency across different environments
