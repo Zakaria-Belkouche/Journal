@@ -165,6 +165,7 @@ the :tag is optional. It's if you want to specify which release version you are 
 
 						Yml file.
 
+
 - Lists all the services your application needs. Says which image to use, which port to expose and how containers should interact with each other. Can spin up entire environment with single command.
 
 - Docker compose automatically creates a custom network for your containers.  
@@ -184,3 +185,48 @@ the :tag is optional. It's if you want to specify which release version you are 
 - Streamline the deployment process. Easily accessed and deployed across multiple environments. 
 - Enhances collaboration. Everyone on team has access to same resources. 
 - Ensures consistency across different environments
+
+
+
+						Multi Stage Builds
+
+
+- Used to optimize docker images. 
+- Allows you to use multiple from statements in your dockerfile. 
+- Use 1 stage to build application, and another much lighter stage to actually run your final image. 
+- Lets you discard unnecessary files and dependencies resulting in a much smaller optimzied image.
+
+
+
+						Container Orchestration
+
+
+- When working with larger apps or deploying services, managing individual containers manually is very complex. 
+- So now we use advanced tools like kubernetes and docker swarm. They automate scale and managing container application.
+- Kubernetes is the leading Container Orchestration tool followed by docker swarm. 
+- There are scenarios where using these Container Orchestration tools are NECESSARY.
+
+
+
+						 	KUBERNETES (K8)
+
+
+- Used if need to manage hundreds/Thousands of containers
+- Open source platform designed to automate the deployment, scaling and operation of application containers. 
+- Takes container management to the next level! Container automation, scaling etc. 
+- Services on cloud that give you Kubernetes services. 
+
+
+
+			DockerSwarm		vs			Kubernetes
+
+
+- Dockers native clustering tool.			- More complex and feature rich container orchestration platform
+- Built into docker. Easy to use and straightforward	- Industry standard
+- Good choice for smaller deployments			- Auto scaling features 
+- No Auto Scaling					- Great active community. Very large community!
+- Good community					- Difficult to start a cluster. Lot's of power but more challnge
+- Easier to start a cluster				- Managed services. K8 on aws,azure etc. Helps a lot!
+- Limited to Docker API capabilities
+
+
