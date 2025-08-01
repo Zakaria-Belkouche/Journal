@@ -1,0 +1,267 @@
+							EVERYTHING AWS
+
+							Intro
+
+
+- AWS is very flexible. Has a service for whatever you want. Virtual machine, storing data, automating infrastructure.
+- Only pay for what you use. 
+
+							AWS Regions:
+
+- Physical locations worldwide where AWS has data centers. Large clusters of AWS infrastructure spread out globally. 
+
+							Choosing Regions:
+
+- Want regions closest to users for latency reasons.
+- Compliance reasons. (If working in countries with strict data laws).
+- Pricing. AWS pricing can vary from region to region
+- Avalibility zones (AZ's). Within regions, there are AZ's, which is a cluster of data centers in a region. 
+- By spreading AZ's across AZ's can achieve Higher Availibily and tolerece. If one AZ goes down (physically), service can spin up another AZ. 
+- Edge locations: part of AWS content delivery network. Helps distributing content to users quickly by caching it closer to where they are.  
+
+
+							Root User
+
+- The root user has unrestricted access to everything. This is why it is not best practice to work with the Root User
+- Instead, we create IAM users and assign them appropriate permissions either directly or through group permissions. 
+
+
+
+							IAM
+
+
+
+
+- Can create users and groups to manage access permissions to AWS resources. 
+- Policies > What users/groups can/cannot do in AWS. 
+- Can Provide temp. access through roles. Great if you need to give individual/services temp access. 
+- Make sure to only give users the exact access they need to do their job. Not more. (Least Privilege Principle)
+- Inline policies are policies that only apply  to a specific user.
+
+IAM policies: Who can do what and when. Can write from scratch or use prebuilt policies. 
+
+- Will have version of policy. 
+- "ID" > Policy name
+- Effect > What the policy does. (Allow/Deny access)
+- Principal > Which users/groups policy will apply to
+- Action > What the effect is applying to.
+- Resource > What the action applies to (S3bucket, EC2 etc.)
+
+IAM Password Policies: 
+
+- Can set password policies to make sure everyone is using strong and secure passwords. 	
+- Can require min pw length, special cases, numbers, Require users to change pw's after some time (pw expiration) and prevent pw re-use
+
+MFA: Multi Factor Authentication
+
+- Users have access to accounta nd can change config's or delte resources in AWS account. Can spin up resources like even bitcoin mining. 
+- So want to protect root account and IAM users. This is where MFA comes in. Even if someone guesses pw, people still can'tlog in. 
+
+Access Keys: 
+
+- Access Keys are used to access AWS from the CLI. 
+- Public Access key is like the lock to the house, easily viewable by logging into account
+- Private Access Key is secret. Keep stored in a safe and private place.
+
+AWS SDK:
+
+- Basically this is similar to a script but it's used to automate tasks through code like python. 
+- It's stored and ran in the container with the rest of the project.
+
+
+IAM Roles for Services: (Set of temp. keys given to services for secure access)
+
+- Sometimes, services need to complete actions on your behalf. Like EC2 may want to read from S3 bucket. 
+- Don't want to hardcode aws credentials (obviously) into these services.
+- IAM Roles lets AWS services get temp. access to other AWS services without giving access keys or passwords.
+- EC2 instance roles: permission to access s3, dynamodb
+- Lambda Function Roles: Can attach relevant permissions so lambda function can do it's job. 
+- CloudFormation Roles: Needs to create and manage resources across aws services. So needs necessary roles. 
+
+
+IAM Security Tools: Helps manage Users and their permissions 
+
+- IAM Cerdentials Report: Lists all users and status of their credentials.
+- IAM Access Advisor: Shows services permissions granted to user and when last acessed. Use to revise policies.
+- All about Least permission Principles. Only give users access to what they need.
+
+
+
+					
+
+
+						EC2 & Compute
+
+
+
+
+- Compute usually means the power behind running your applications.
+- Traditionally this was physical servers which you would own and maintain.
+- But now AWS takes care of the phyiscal part and you can focus on what you want servers to do.
+
+
+EC2: "Elastic COmpute Cloud"  >  Part of 'Infrastructure as a Service' . ONLY PAY FOR WHAT YOU USE
+
+- EC2 is the most popular AWS service. 
+- Rent virtual machines. (EC2) (Choose OS, Configure based on needs)
+- Storing Data on virtual Drives (EBS) > Like a hard drive for EC2 instances
+- Distributing load across Machines (ELB)  > Just Load balancers for EC2 instances. Distributes traffic across EC2's
+- Scaling the services using auto scaling groups (ASG).  > Allows EC2 to scale automatically.
+
+
+EC2 Sizing and Configiration:
+
+Configuration options for your virtual machine: Wrong sizing can cause underperformance or over paying.
+	- OS
+	- Computer Power & Cores
+	- RAM
+	- Storage Space: (Network Attached EBS/EFS)  or	 (Hardware EC2 instance Store)
+	- Network Card: Speed of card, Public IP address (Makes it accessible from the internet)
+	- Firewall rules: Security Groups
+	- Bootstrap script: Runs automatically when Instance launches. 
+
+
+EC2 User Data Script
+
+- A script that automatically runs when instance launches for first time. Good way to bootstrap instance. 
+- Install updates. Install Sofware (nginx etc.). Download files, packages, config files, app code. 
+- Any automation tasks you want to run when machine boots up, you do here. 
+- Script only runs when you first launch instance. Designed for set up tasks.
+- Runs with root user. Has full control over the system. Be careful what you include in this script. 
+- For DevOps, this is a huge time saver when setting up multiple instances.
+
+For example:
+
+	Task				Should You Use User Data?
+
+apt update && apt install		✅ Yes — common use case
+Install AWS CLI				✅ Yes — good example
+Install NGINX or Apache			✅ Yes
+Pull code from GitHub			✅ Yes
+Create users / set passwords		✅ Yes
+Set up cron jobs			✅ Yes
+Start background processes		✅ Yes
+Run a Python app			✅ Yes
+Schedule a shutdown			✅ Yes
+
+
+EC2 Instance Types - Overview
+
+- General Purpose		> Go to Well rounded Instances. Work for a variety of usecases. 
+- Compute Optimized		> Extra CPU. If you need more power. 
+- Memory Optimized 		> Things like databases, high workloads
+- Storage Optimized 		> Fast and High throughput storage. (Quick access to storage)
+- Accelerated Computing		> Machine learning, video processing, scientific simulations
+- HPC Optimized			> Intensive Computing tasks that require fast networking and powerful processing
+
+Naming Conventions for EC2 instances:
+
+Example EC2 instance name:     m 5 . 2 x large    
+
+(m > General purpose) (c - compute optimized) (r - memory optimized)
+
+5 - the generation of the instance. AWS improve instances over time. 
+
+2 x Large - The size within the Instance class. (Bigger class = more resources)
+ 
+
+EC2 Purchasing Options: 
+
+- On demand instances: Short workload, predictable pricing, pay by the second.
+- Reserved (1 or 3 yrs): Offers discount in exchange for longer commitment.. 2 types
+	- Standard: For long workloads
+	- Convertible reserved instances: gives flexibility to change instant type over time
+- Saving Plans (1 or 3 yrs): Provides a discount for commitment to a certain amount of usage. (choose how to use it)
+- Spot instances - Bid for unused EC2 capactiy at much lower price. AWS can take back instance when needed.
+- Dedicated Hosts: Full control and visibility of hardware. Book entire phyiscal server. (Good for legal needs)
+- Dedicated Instances: Ensure no other aws customer will share underlying hardware with you. More isolation.
+- Capacity Reservations: Reserve Capacity in specific AZ for any duration
+
+
+
+
+
+						Security Groups (SG)
+
+
+
+
+- Control how traffic flows into and out of EC2 instances. (Virtual firewalls)
+- Backbone of network security for EC2 instances. 
+- Security groups only deal with Allow rules. Anything that isn't explicitly allowed is blocked by default.
+- SG's outbound traffic is Allowed by default 
+- If you allow inbound traffic, corresponding outbound traffic is automatically allowed.
+- Control which ports are open on your instance. (HTTP is port 80) (SSH is port 22) (Can have auth IP ranges)
+- Controls Inbound/Outbound traffic. (0.0.0.0/0 means open to the whole world)
+- Can set up Custom TCP rule (specify port etc.)
+- Can attach same SG to multiple instances. SG's are locked to specific locations. 
+- Traffic meets SG first, so if EC2 instance is not seeing traffic, check the SG.
+- Good practice: Have 1 SG dedicated just for SSH access to tightly control who can access via SSH.  
+
+
+Referecning other SG:
+
+When managing multiple EC2 instances, each with their own Security Groups, referencing specific IP addresses can break if those instances are replaced or their IPs change (e.g., due to autoscaling).
+
+To solve this, you can reference one Security Group from another, which dynamically allows traffic from any EC2 instance attached to that group, regardless of its current IP.
+
+This ensures your infrastructure stays flexible and scalable, without having to update rules manually.
+
+
+Classic Ports to know: 
+
+22: SSH
+21: FTP (File Transfer Protocol) - Upload files into a file share
+22: SFTP (Secure File Transfer Protocol) - Upload files using SSH
+80: HTTP - access unsecured websites (Web servers that do not use Encryption)
+443: HTTPS - access secured websites (Encrypts using TLS that works over TCP)
+53: DNS - For DNS quesries and resolving. This port is responsible for translating domain names to IP's
+3389: RDP (Remote Desktop Protocol) - log into a windows instance. Used for management of EC2 based Windows instances.i
+
+
+Elastic IP's
+
+- If you need a fixed public IP for your instance (due to stopping and starting maybe done by ELB), then you can
+  use Elastic IP's. An Elastic IP is a public IPv4 IP you own as long as you don't delete it. 
+- Elastic IP's are only charged when not in use. Useful if external services point to instance using static IP.
+- Ensures no disruption when restarting instances.
+
+- Try to avoid using Elastic IP's. They reflect poor architecture design. Instead use random public IP and register DNS name or use a Load Balancer. 
+
+
+
+					
+
+							STORAGE
+
+
+
+EBS Volume:
+
+- An EBS volume is a network drive that you can attach to your instances. Not a physical drive. It's a virtual storage.
+- Allows instances to persist data even when stopped/terminated. Data on EBS volume remains intact.
+- Bound to availibility zone. Can't move it across zones. But can snapshot and create new ones if needed. 
+- Ideal for situations where you need to store data for long periods. 
+- EBS volumes very useful for keeping data safe in the cloud. 
+
+
+
+AMI: Amazon Machine Image
+
+- A blueprint for launching EC2 instances
+- It's a pre-configured template that contains all the info needed to launch an EC2 instance. 
+- Customization of an EC2 Instance. Prepackaged. 
+- AMI's save time. All the software, config etc. 
+- Faster boot times and less time spent on manual steps.
+
+
+Amazon EFS: Elastic File System   > Key note: Used for storing and sharing FILES. 
+
+- Amazon's solution for shared file storage. A network drive basically 
+- Managed network file system that allows you to make shared file system that's mounted on multiple instances simultaneously
+- EC2's can read/write to EFS's concurrently
+- Copies stored across multiple AZ's. If one AZ goes down, backup's are available. Also makes it highly available. 
+- Scalable! Grows automatically as you add data. Pay per use. 
+- Linux can mount EFS onto the OS and treat it as if it were a local disk. Easily accessible... Convenient. 
+- Easy to share data across mutliple EC2 instances. 
+- EFS can be expensive. 3x the cost of a standard SSD. 
