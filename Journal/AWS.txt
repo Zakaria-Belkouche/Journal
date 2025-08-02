@@ -201,9 +201,11 @@ EC2 Purchasing Options:
 
 Referecning other SG:
 
-When managing multiple EC2 instances, each with their own Security Groups, referencing specific IP addresses can break if those instances are replaced or their IPs change (e.g., due to autoscaling).
+When managing multiple EC2 instances, each with their own Security Groups, referencing specific IP addresses can break
+if those instances are replaced or their IPs change (e.g., due to autoscaling).
 
-To solve this, you can reference one Security Group from another, which dynamically allows traffic from any EC2 instance attached to that group, regardless of its current IP.
+To solve this, you can reference one Security Group from another, which dynamically allows traffic from any EC2 
+instance attached to that group, regardless of its current IP.
 
 This ensures your infrastructure stays flexible and scalable, without having to update rules manually.
 
@@ -265,3 +267,163 @@ Amazon EFS: Elastic File System   > Key note: Used for storing and sharing FILES
 - Linux can mount EFS onto the OS and treat it as if it were a local disk. Easily accessible... Convenient. 
 - Easy to share data across mutliple EC2 instances. 
 - EFS can be expensive. 3x the cost of a standard SSD. 
+
+
+
+
+
+						Load Balancing and Scalability
+
+
+
+
+
+- Scalability means application/system can handle increasing loads as demand grows. (Self evident) 2 types:
+
+High availibility: means system is always up and running by running app/system in multiple location so if one part
+fails, another can take over. Goes hand in hand with horizontal scaling. (Run app in more than 1 AZ). Survive data
+centre loss. Ensures app is always available to users.  
+
+
+Vertical Scalability: Adding more power to existing system. t2 micro instance scales up to maybe t2 large etc. 
+Used in: Non distributed systems such as databases. Hardware limit to how far you can vertically scale. (Check Price)
+
+
+Horizontal Scalability: Add more instances of a resource to handle the load. (adding more servers) (Elasticity)
+Horizontal scalability is very common in modern applications and cloud structures. Flexible. Scale up or down.
+Can use auto scaling groups to automate the system. Very easy. Also makes your application very resiliant.  
+
+
+Load Balancing (ELB): Elastic Load Balancers. Offers a Single Point of Address. (Public IP). Managed/Maintained by AWS.
+
+A way to distribute incoming traffic/requests across multiple servers so app does not get overloaded. 
+Constantly checks which EC2 instances are healthy and directs traffic towards servers which can handle it. Managed by
+AWS and easily configurable. Handles system failures. Stops traffic to servers that are down. 
+Does regular health checks. Can handle SSL encryption/decryption. So instances instead just handle app logic.
+Ensures stickiness of cookies (Users are stuck to same session on specific server so temp. data is not lost)
+Fully integrated with other AWS offerings (EC2, EC2 ASG, Amazon ECS, Route 53 etc.)
+
+Health Checks by ELB's: Enables Load Balancers to know if instances are healthy.
+ 
+Checks health of instances by sending requests to certain port and root. Sends HTTP request to port 4567 and checks 
+response. Health Checks are automated and keeps everything running smoothly. 
+
+Reverse Proxy: Similar to load balancer. Sits between app and users handling requests but handled manually by you.
+
+
+						Types of ELB's on AWS:
+
+Session Stickness is applied across all load balancers. It uses cookies. Can set how long cookies and stickness lasts by
+setting epiration data. Use if server stores session data which is not shared across instances. Temp. files.
+
+When stickiness is enabled, you can overload an instance if too many clients stuck to it. 
+Can lead to imbalanced traffic distribution. 
+
+
+1. Classic Load balancer. (Old generation. Not commonly Used)
+- Supports basic HTTP, HTTPS, TCP, SSL traffic
+
+2. Application Load Blanancer. (Operates at Layer 7 Application Layer)
+
+- Supports HTTP, HTTPS, WebSocket. Also of course load balances between instances.
+- Can route traffic to different target groups (Lambda functions, s3 buckets, EC2 instances...)
+- Can route based on URL path or Host name in URL. 
+- Has a port mapping feature to redirect to dynamic port in ECS.
+So ALB's can route traffic to different target groups (maybe using URL path mapping) and each target group will have
+many servers which the ALB will then load balance between. This is great for splitting up traffic between the different
+services you app may offer making your entire app infrastructure more modular and managabe.  
+- Target Groups: Groups of instances that ALB will route traffic to. 
+- Each ALB has a fixed hostname provided for by AWS. If need something more custom, use domain name and point it to 
+host name.
+- Can set ALB's to forward client IP to Server Instances, if server requires it (for example to geo-locate)
+- Does handle SSL termination and of course Inspects HTTP headers.
+
+
+3. Network load Balancer. (Operates at Layer 4 Transport Layer)
+
+- Built for TCP and UDP traffic. High performance, low latency. Handles millions of requests per second.
+  Also load balances between servers. Lightning fast response time.
+- Assigns a static IP per AZ. If you need predictable static end point to connect to (like for whitelisting).
+- Can also direct traffic to ports/target groups. 
+- Can allow HTTP through but does not handle SSL decryption or Inspect HTTP headers. 
+  
+
+
+4. Gateway Load Blancer. (Operates at Layer 3 Network Layer. Works with IP protocol)
+
+
+- Help deploy, scale and manage third party network applications like firewalls, intrusion detection and traffic 
+analysers. So the GLB doesn't load balance between app instances or backend server instances, it literally scales 
+network packets between firewall instances or other third party network app instances. 
+
+ELBs can be set up as Internal (Private ones) or External (Public ones)
+
+
+Load Balancer Secruity Groups:
+
+- Set SG config for Load balancers. Very important!
+
+
+					SSL/TLS (SSL just means TLS today)
+
+- SSL: Secure Socket Layer
+	Ensures traffic between clients and servers are encrypted in transit. (In flight encryption)
+
+- TLS: Transport Layer Security (Modern version of SSL)
+
+SSL/TLS certificates provided for by Authorities: (Comodo, Symantec, GoDaddy, GlobalSign, Digicert etc.)
+
+SSL certificates have an expiration date that you set (when you must renew). If SSL certificate expires, users
+will be warned before connecting to your server.
+
+
+ACM: AWS tool for managing certificates. Load balancers use SSL certificates automatically. 
+	- Need to configure ALB and NLB to use SSL that you set up using ACM.
+
+
+HTTPS Listener: When setting up HTTPS Listener on load balancer, this is what ensures traffic is encrypted.
+	- Need to specify default SSL certificate.
+	- Can add multiple certificates to handle traffic to multiple domains. 
+	- Server name Indication (SNI): Clients can use SNI to connect to specific host name with correct SSL cert.
+	- SNI allows users to connect to independent websites, on the same server.
+
+
+Connection Draining: Gracefully shutting down EC2 instances
+	- Rather thne cutting off user connections, connection draining allows in flight requests to finish gracefully.
+	- Very useful when autoscaling groups are being used as instances are being stopped and started continuously.
+
+
+
+Auto Scaling Groups: Adjusts the number of running EC2 instances based on load. 
+	- Automatically registers new instances to a load balancer
+	- Can enforce min/max/desired EC2 capacity instance settings. 
+	- If instance is unhealthy/terminated, ASG automatically re-creates it. ASG's are also free.
+	- Can use AMI (Amazon Machine Image) for config details when creating new instances.
+
+
+
+Auto Scaling groups (ASG) Launch Template: Config settings.
+	- Ensures when ASG add's new instances, they are setup with same config. 
+	- AMI. Preconfigured EC2 image. Instance type. User data setup 
+	- EBS Volumes. Persistent storage for instances
+	- Security Groups
+	- SSH Key Pair
+	- IAM Roles for other services maybe?
+	- VPC+Subnet information
+	- Load Balancer Info so it automatically registers new instances with it.      
+
+
+
+CloudWatch Alarms:
+
+- Keeps an eye on certain metrics like : CPU, MEMORY, etc. You set. 
+- If Cloudwatch alarm triggers, ASG's can take action. Can scale out if necessary (Increase no. of instances)
+- Scaling policies: (Example: night time, decrease instances)
+- Moral of the story is: Cloudwatch is amazing. Cloudwatch automates based on realworld metrics. Amazing!
+
+
+ASG Scaling Policy options:
+
+- Dynamic Scaling: Simple to set up. Maintain CPU usage at 40%. (Will add/remove instances to maintain policy)
+- Simple/Step Scaling: Based on Alarmy. When CPU usage is > 40%, add instances etc. Gives more granular control.
+- Scheduled Scaling: Responding to demand at different times/future. For predictable load patterns. 
