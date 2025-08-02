@@ -572,6 +572,83 @@ Then the subnet mask defines how many bits can change in the IP. /0 /8 /16 /24 /
 Each IP number in IPV4 can go up to 255
 
 
+Ok. VPC's are very imporant. They are like an internal Private network within the AWS framework. They allow your 
+different AWS software to easily communicate with one another by traversing through Private networks as opposed to the
+WAN.
+
 
 Default VPC: Made upon account creation
 -If making an EC2 instance, it will run on this default VPC unless otherwise specified. 
+
+
+Subnets: Smaller networks within your VPC. Each VPC is divided into smaller subnets. Subnets can be public/private.
+	- AWS Reserves 5 IP adresses in each subnet for necessary use which are not usable.
+
+
+Internet Gateway: Allows resources in VPC like EC2, ECS etc. to connect to the internet
+	- Gateway that instances can send/recieve data to the outside world.
+	- Scales horizontally easily. Highly available and redundant. 
+	- Internet Gateway's not created by default at VPC creation. Only 1 gateway can be attached to a VPC. 
+	- Route tables for subnets must also be updated.  
+
+
+Bastion Host -SG: An EC2 instance that sits in public subnet that can SSH into private backend subnet. 
+
+
+NAT Gateway (Network Adress Translation): 
+
+- Managed service provided by AWS that allows instances in private subnet to connect to internet.
+- But it blocks incoming traffic from internet. Allows Private instances to reach internet without exposure to internet.
+- Used to install Software etc. AWS manages this. Pay per hour for usage. Tied to specific AZ and tied to elastic IP. 
+- If you want redundancy across zones, create multiple NAT gateways in different zones. 
+- NAT gateway needs internet Gateway to access the internet. 
+- Great for maintaining tight security with access to internet for updates or other services. 
+- If your infra is spread across AZ's, Make sure to also spread AZ's to make sure of High Availibility.
+- High availibility within AZ 
+- Automatically scales
+- Can handle up to 100Gbps
+
+
+NAT Instance: (An EC2 instance which acts as a NAT)
+
+- Needs to use a fail over script to switch to a different instance. 
+- Bandwith, Cost etc. depends on EC2 instance type. 
+- Managed by you. You need to take care of software updates, OS patches etc.
+- Can also be used as a Bastion Host.
+- You must set up the Security Groups.
+
+
+NACL (Network Access Control List): Like a firewall which controls traffic to/from subnets.
+	- All subnets get assigned default NACL.
+	- 1 NACL per subnet. 
+	- Applies to everything in the subnet. (Must define inbound/outbound rules explicitly)
+	- The last rule is a * which denies all traffic which has not found any rule match.    
+
+
+SG's work at the EC2 instance level! They decide what traffic comes in/out of the actual server. 
+SG's are statefull. If inbound/outbound traffic is allowed the response is allowed by default. 
+
+NACL work at the subnet level. NACL's are stateless. This means need to specify incoming/outbound traffic independently.
+
+
+VPC Peering: A way to privately connect 2 VPC's using AWS's internal network. When peered, VPC's behave like 
+they are part of the same network. This means no traffic flows through public internet. Can not have overlapping CIDR's 
+otherwise AWS will not allow this pairing. Need to also update the route tables to ensure traffic can flow through the
+Peered VPC's.  	
+
+
+VPC Endpoints (AWS PrivateLink):
+
+- Allows you to connect to AWS services using a private network instead of going over the public internet. 
+- Big secuirty win! You're not exposing VPC to internet. 
+- This setup is reduntant and scales horizontally. No need for internet gateways or NAT gateways. 
+
+Types of VPC Endpoints:
+
+1) Interface Enpoints
+	- Creates a Private IP adress as an entry point. Pay per hour + per GB of data processed. 
+	- Need to attach a secuirty group to manage traffic going to and from instances. 
+
+2) Gateway Endpoints
+	- Do not create a Private IP. Instead they create gateway which you must target in route tables. 
+	- Supports S3 and DynamoDB. This is Free.
