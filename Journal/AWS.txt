@@ -427,3 +427,151 @@ ASG Scaling Policy options:
 - Dynamic Scaling: Simple to set up. Maintain CPU usage at 40%. (Will add/remove instances to maintain policy)
 - Simple/Step Scaling: Based on Alarmy. When CPU usage is > 40%, add instances etc. Gives more granular control.
 - Scheduled Scaling: Responding to demand at different times/future. For predictable load patterns. 
+
+
+
+
+
+
+
+						Containers on AWS
+
+
+
+
+Storage for Containers:		Dockerhub (Public Images)	or 	Amazon ECR (Amazon Elastic Container Registry)
+
+Amazon ECR: Integrates Deeply with AWS services and provides secure storage. Store Public/Private Images. 
+Amazon ECS: Amazons own Container Orchestration platform. Like Docker but AWS run. 
+Amazon EKS: Amazon Elastic Kubernetes service. (open source). (Intergrates Kubernetes with AWS)
+AWS Fargate: Serverless Container Platform that works with ECS and EKS. (Manages all infrastructure automatically for containers)
+
+
+Amazon ECS: Run and Manage containers on AWS. Has different Launch types.  
+
+EC2 Launch type:
+ 
+- You are responsible for the infrastructure. EC2 instances are where containers will run.
+- Each EC2 instance must run ECS agent. ECS agent is what registers instance in ECS cluster making it able to run cont.
+- ECS takes care of starting and stopping containers automatically but you manage the infrastructure.
+- Great if u want to manually manage infra. 
+
+Fargate Launch type: (Serverless) 
+
+- Do not manage any EC2 instances. No infra to manage at all. AWS handles all of it. 
+- Only need to define CPU/Memory limit and AWS runs everything for you. 
+- Task defintions: Configures AWS on how to run containers with required hardware/network settings.
+- Automatically handles adding more containers and EC2 instances automatically. 
+- Just define containers, and fargate ensures they run efficiently. 
+
+
+
+IAM roles for ECS: (Service roles)
+
+
+- With the EC2 launch type, you will work with 2 IAM roles: 
+	
+	- EC2 Instance profile (Used by ECS agent) - Gives permissions to interact with other AWS services
+		- Allows API calls to ECS to update cluster. Send logs to cloudwatch. Pull docker images from ECR...
+		- Makes sure ECS agent can do it's job by giving it necessary authority. 
+
+	- ECS Task Role: Each container run has it's own task role. Defines what permission task has while running
+		- Different containers might need access to different containers. 
+		- Can lock down exactly what each container is allowed to do. 
+		- Ensures each container can interact with relevant services without giving too much power.
+
+
+
+Amazon ECS Load Balancer Integrations: Which one is used for ECS cluster?
+
+- ALB: Go to choice for most ECS setups. Aware of HTTP/HTTPS. Ideal if dealing with web apps and can be path based. 
+- NLB: Super fast and works for TCP/UDP traffic. High throughput and low latency.
+
+
+ECS Auto Scaling
+
+- Automatically adjusts the number of ECS tasks running based on demand. 
+- If traffic spikes, ECS will scale up number of tasks.
+- Uses AWS autoscaling to make decisions (CPU usage etc.)
+	- Target Tracking: Can set targets and ECS auto scaling will scale based on these targets.  
+	- Step Scaling: Scales based on Alarms
+	- Scheduled Scaling - Scale based on specified date/time
+
+If using ECS Fargate, auto scaling happens automatically. Much easier to set up because it is serverless. 
+
+
+
+
+
+
+						ServerLess
+
+
+
+
+
+- Do not need to manage any servers/infra at all. You just deploy your code. 
+- Function based deployments. Uses Lambda functions. Function as a service.
+- Serverless does not mean no servers. You just don't manage the servers.
+- AWS manages the servers behind the scenes.
+
+
+Types of Serverless in AWS:
+
+- AWS Lambda: Write a code in a function. Upload it. AWS Lambda runs it.
+- DynamoDB: Serverless NoSQL database that scales automatically. 
+- AWS Cognito: Helps manage user authentication. Manage logins in application
+- AWS API Gateway: Bridge between users and Lambda functions. Create and Monitor API's that interact with your backend.
+- Amazon S3: Storing Files and static content. Completely serverless and scales based on data stored. 
+- AWS SNS & SQS: Helps with communication and notification between services. 
+- And more...
+
+
+Why use AWS lambda instead of EC2?
+
+
+				EC2			vs			Lambda
+
+- Virtual servers in the cloud					- No servers to manage.
+- Limited RAM and CPU						- Short executions. Run time limit of 15min.
+- Continuosly Running 						- Runs on demand. Only runs when needed.
+- Need to manually set auto Scaling config.			- Automated Scaling.
+								- Easy Pricing. Only pay for what you use.
+								- Integrated with all AWS services
+								- Integrated with many programming languages
+								- Easy monitoring through cloudwatch
+								- Lets you scale resources for functions
+
+
+
+Lambda can actually also run container Images. Make sure container implements lambda runtime api.
+
+
+OKAYYY I UNDERSTAND LAMBDA NOW.
+
+LAMBDA IS USED FOR SHORT EXECUTION TASKS WHICH ONLY RUN ON DEMAND WHEN NEEDED, LIKE PERHAPS TRIGGERED BY AN EVENT
+YOU SET SUCH AS A CLOUDWATCH ALARM OR AN UPLOAD INTO AN S3 BUCKET. INSTEAD OF RUNNING SERVERS 247 TO COMPUTE SIMPLE
+TASKS, WE JUST USE LAMBDA FUNCTIONS TO COMPUTE THESE TASKS SERVERLESSLY AND WE ONLY PAY WHILE THE FUNCTION IS RUNNING
+
+ 						
+
+
+
+
+
+						AWS Networking
+
+
+
+
+
+CIDR: A method for allocating IP addresses. 
+
+Contains a base IP. This represents an IP contained in the range. 
+Then the subnet mask defines how many bits can change in the IP. /0 /8 /16 /24 /32 etc. 
+Each IP number in IPV4 can go up to 255
+
+
+
+Default VPC: Made upon account creation
+-If making an EC2 instance, it will run on this default VPC unless otherwise specified. 
