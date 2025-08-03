@@ -618,7 +618,7 @@ NAT Instance: (An EC2 instance which acts as a NAT)
 - You must set up the Security Groups.
 
 
-NACL (Network Access Control List): Like a firewall which controls traffic to/from subnets.
+NACL (Network Access Control List): Like a firewall which controls traffic to/from subnets. SUBNET LEVEL!!!
 	- All subnets get assigned default NACL.
 	- 1 NACL per subnet. 
 	- Applies to everything in the subnet. (Must define inbound/outbound rules explicitly)
@@ -652,3 +652,122 @@ Types of VPC Endpoints:
 2) Gateway Endpoints
 	- Do not create a Private IP. Instead they create gateway which you must target in route tables. 
 	- Supports S3 and DynamoDB. This is Free.
+
+
+IPV6
+
+- All IPV6 IP addresses are public... That means, accessible over the internet.
+- This is the future.
+- As all IP's are public, you must have effective Security groups!
+- For IPV6 Instances on a private subnet, there is not need for a NAT gateway. Can directly use Internet gateway.
+  But you must set the correct route tables/NACL settings so that no inbound traffic is permitted.
+
+
+Egress-only internet gateway:
+
+- Similar to NAT gateways.(Outbound only)
+- Designed for IPV6 traffic. Allows connection to internet via IPV6 but blocks all incoming network traffic. 
+
+
+
+
+
+
+			
+							Route 53
+
+
+
+
+
+
+
+Route 53: AWS's managed DNS service. 53 is the port used for DNS queries (Hence why it uses 53)
+	
+- Authoratitive DNS meaning: You have full control over DNS entries. Update/add DNS records to point to instances.
+- DNS registry: You can buy and manage domain names. 
+- Health checks: Built in health check capabilities. Monitors health of resources and responds accordingly. 
+		(If primary server goes down, automatically routes traffic to backup)
+- The only AWS service which offers 100% Availability. Designed to never go down.
+
+
+
+							Hosted zones: 
+
+- Holds all DNS records for certain domain and sub domains.
+- Tells route 53 how to route traffic. 
+- Public hosted zones - used for routing traffic across public internet. 
+- Private Hosted Zones - Used within VPC's. Perfect for managing internal traffic between 1 or more private VPC's.  
+
+Each Route 53 Record Contains:
+
+- Domain name : Example.com
+- Record Type : A (IPV4) or AAAA (IPV6) or CNAME (Map's hostname to another hostname) or NS (Name server)
+- Value: The actual target. (The actual IP)
+- Routing Policy: How you want route 53 to respond to queries. Do you want traffic to be distributed to multiple
+		  servers or just routed to 1? 
+- TTL (Time to live): How long should DNS records be cached before they delete it (and have to check again)
+		      High TTL means less traffic as they are cached for longer and therefore lower costs.
+
+
+Alias Records: Special DNS service
+
+- Special service in AWS that lets you map domain names to AWS resources like for example: A load balancer, etc. 
+- Cannot set TTL. 
+- Often used with: Load Balancer, API gateway, S3 Websites, ELB, Amazon Cloud Front. 
+- Alias records can even point to other records within the same hosted zone.  
+
+
+
+Route53 Routing Policies: Just helps DNS server respond to queries. 
+
+Health Checks can usually be integrated into the various policies listed below.
+
+Common use case: Load Balancing between REGIONS
+
+- Simple : Gives back same IP address every time
+
+- Weighted: If you have 2 servers for example, can decide % of traffic going to each server.
+
+- FailOver: If main server is down, Route 53 will route to a backup server instead
+
+- Latency based: Route53 will route to server with least latency
+
+- Geolocation: Route to different regional servers based on country/geographical location.
+
+- Geoproximity: Route users to closest servers. However, can choose where traffic gets directed to.
+	        Create biases to send more people to desired server loaction 
+
+- Multi-value answer: Provide multiple IP addresses in response to DNS name. (Spreading load without a load balancer)
+
+- IP-based routing: Provide route 53 with CIDR blocks and map them to different locations/resources.
+
+- Health Checks: Route53 can ping servers and check for response. If server down, can re-route traffic automatically. 
+- Health checks can also monitor other health checks. This will be like a overall health status dashboard. 
+- Route53 can also be intergrated with cloudwatch alarms and metrics. 
+
+
+
+
+
+
+							CloudFront
+
+
+
+
+FAST DELIVERY!
+
+AWS's own content deliver network. Designed to improve performance by caching content closer to users at edge locations.
+
+Content from an S3 bucket or EC2 server is cached more locally to users in these edge locations. 
+
+Integrates with AWS shield, AWS WAF to defend against DDOS attacks and other threats. Has over 200 locations globally.
+
+
+
+							CloudFront Origins
+
+- Where cloudfront gets content that it delivers to users.
+- Origins ensures only Cloudfront can access your resources (S3 bucket)
+
