@@ -1,0 +1,194 @@
+							TERRAFORM
+
+
+
+							Introduction
+
+- The go to software for IAC. Allows you to deploy infrastructure on AWS using Code. 
+
+- IAC Benefits: Easy to adjust, Easy to replicate, Easy to scale, Easier to see in it's totality. 
+
+- Terraform is a Infrastructure Orchestration tool. Ansible is a config management tool. 
+
+- Terraform is a cloud Agnostic too. It can deploy infrastructure to: AWS, Azure and Google Cloud Platform.
+
+- Terraform can also deploy Kubernetes resources. Point is, Terraform can deploy to many different resources.
+
+- It does this through the terriform registry where it will use plugins and api calls to deploy to different providers.
+
+
+						IaC with Version control (git)
+ 
+
+- IAC can be stored in git. This allows you to track changes, roll back commits, and collabarate amongst team members.
+
+- Terraform State file and Terraform lock file keep the IAC stable while teams are working on it. Not sure how yet. 
+
+
+					Infra Orchestration vs Config Management
+
+
+
+			Infra Orchestration					Config Management
+
+
+- Tools: CloudFormation , Terraform				- Tools: chef , Ansible , puppet
+- Arranging the essentials in a particular order		- Consider what runs inside the machine.
+- Used for overall deployment of infrastructure			- Configure the infra to run app code.  
+- Describes the infrastructre state. (What you want)		- Install software, manage files, ensure services run. 
+- Declarative (I want this. Terraform figures out how to do it) - eg: Install Nginx, setup permissions, config firewalls
+
+
+
+
+						The terraform WorkFlow
+
+
+	Practioner -> Infrastructure as code ---> Plan  ---------------> Run an 'Apply' ----> Deployed on Cloud
+
+	   (Me)		(Writes code)	  (Terraform plan command)     (Apply the IAC plan)
+
+
+
+
+
+						Tips for using Terraform
+
+
+- Use the official Terraform Documentation. 
+- Terraform registry - Used daily when using terraform and deploying. This includes documentation for AWS provider.
+- Testing and Validation - (You don't want to break/delete important live code. So important to test and validate)
+- Start with a small MVP (Minimum Viable Product) then iterate. Configure resource you need to deploy then add on to it.
+- Implement Dry Software engineering Principle. (Do not repeat yourself. Use modules. Make as dry as possible)
+
+
+
+
+
+						Terraform State File
+
+
+- The state file is very important.
+- The terraform state file is the blueprint. It is a record of your current existing infrastructure.
+- The terraform state file ensures idompotency. Idompotency:
+  (Terraform config will always produce the same result). If changes are made to state file config, it doesn't
+  completely change everything, it just applies particular change.
+
+When you run terraform apply, terraform checks your code, what currently exists, the differences (if any)
+and if there is no differences, then no changes are made. This is what we call idompotency. Always getting the same
+result unless something has actually changed in the code. 
+
+This means that it is safe to re-apply your infrastructure. Reduces risk of recreating things. Keeps infra stable. 
+Works well in CI/CD pipelines.
+
+Terraform plan shows ONLY what will change.
+
+
+
+						Desired vs Current State
+
+
+- .tf			> Desired State (Your terraform config. Maybe changes you are trying to implement)
+- .tfstate		> Current State (The state file)  
+
+
+						The Backend
+
+- This is where terraform stores your state file. It can be located on local device or can direct to a shared S3 bucket.
+
+
+
+
+						Terraform Commands:
+
+terraform init		- Sets up work place. (Terraform block and provider block. Installs libaries/aws log in)
+terraform plan		- preview changes terraform will make before they happen. See into the future.  
+			  Everything shown in plan refers to changes! Symbols: (+ create) (~ update) (- destroy)
+terraform apply		- Takes execution plan and applies it to infrastructure.
+			  Will generate execution plan and wait for confirmation from you before performing actions.
+terraform destroy	- Safely and Efficiently tears down infrastructure managed by particular .tf config.
+			  Reads current config and state file to understand what it's managing. Then generates destroy
+			  plan. Can specify which sources to destroy. Will also wait for confirmation. 
+			  Terraform then updates state file to confirm resources have been destroyed. 
+
+
+
+
+						Terraform Providers
+
+- Just simply a plugin that allows you to interact with cloud platforms and enables terraform to manage cloud resources.
+
+				---------------------------------------------------------------
+
+						Terraform Provider Code Block
+
+Terraform { required_providers { ... } }			>  This is the Terraform Provider block. Example below.
+
+
+Terraform {
+     required_providers {
+	aws = {
+	  source = "hashicorp/aws"				> The libary of code that knows how to interact with aws
+	  version = "5.62.0"
+	}
+     }
+  }
+
+Provider "aws" {
+	#Configuration options		>	To login to your aws basically. can use ~/.aws/credentials
+  }
+
+
+				-----------------------------------------------------------------
+
+				
+
+							Resource Block
+
+- Used to define a piece of infrastructure that you want to manage.
+- Each resource block corresponds to specific resource type. 
+
+
+				-----------------------------------------------------------------
+
+						EC2 resource block
+
+
+resource "aws_instance" "name" {				# Specify which resource and it's name. 
+  ami = "xyz" 							# Amazon Machine image. Template for instance
+  instance_type = "t2.micro"					# Self Explanatory. 
+Tags = {							# A way to label/categorise resources. Not compulsory
+Name = "Bugfix"							  But good practice. Tags include: Name, team, owner etc
+}
+}
+
+
+
+				----------------------------------------------------------------
+
+
+
+
+						Terraform Importing
+
+
+- If a resource already exists in cloud environment but not created with terraform. What do we do? Terraform import.
+- Terraform brings existing resources under terraform's management. 
+
+
+- We use an 'import block' to import instances using the id. 
+- Terraform docs guide us on exactly how to do this.
+- Very simple... Look code below.
+- you can run this directly from the terminal or make a tf file, plan, apply, then delete it once done.
+- Oh by the way, you need to manually add the resource into ur actual.tf file so it knows where it's important 'to'. 
+
+				-----------------------------------------------------------------
+
+import {
+  to = aws_instance.web
+  id = "i-xyz123"
+}
+
+				-----------------------------------------------------------------
+
+- Check if the terraform import works by running a terraform plan. Check if everything matches. 
