@@ -192,3 +192,60 @@ import {
 				-----------------------------------------------------------------
 
 - Check if the terraform import works by running a terraform plan. Check if everything matches. 
+
+
+
+
+
+
+						Local vs Remote Statefiles
+
+Backend : Where and how Terraform stores it's state file. Commonly teams use AWS S3 with DynamoDB for statelocking.
+To clarify though! the .tf file can be stored on a shared github repositary but the backend refers to the state file
+													   exclusively
+
+Best Practices: 
+
+- Regularly backup the state files
+- State locking. Make sure backend ensures state locking to prevent concurrent changes
+- Encrypt state files. Appling encryption on state files, especially in remote back end is crucial to protect data.
+- Consider version control. Do not commit state files to github repositaries as they may contain sensitive data.
+- For terraform configurations though, we can of course use git hub as this allows for team collabaration. 
+
+
+				---------------------------------------------------------------
+
+terraform {
+  backend "s3" {
+    bucket         = "my-terraform-state-bucket"
+    key            = "dev/network/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "terraform-locks"
+    encrypt        = true
+  }
+}
+
+This backend code is specified in the terraform block (that you initially terraform init)
+Note that you are telling terraform where to state the state file. So the s3 bucket should already exist... 
+You can deploy the s3 bucket manually, and it doesn't even need to be imported as it's not part of ur infra. 
+				------------------------------------------------------------------
+
+							Local Statefile
+
+
+- Default. Terraform stores your statefile locally on your machine in your project directory.
+- Easy to set up. No additional config required on where to store your state file.
+- Good for single user projects.
+
+
+
+							Remote Statefile
+
+
+- When working in a team/larger projects we need to use a Remote Statefile. 
+- Remote statefiles store the state in a central remote location (like an s3 bucket)
+- Multiple team members can access and update the state. 
+- Automatic locking: Many remote backends (like terraform cloud or s3 bucket + DynamoDB) offer state locking.
+- State locking prevents people working on the state file at the same time. 
+- Remote backends can automatically back up state file and provide encryption.
+ 
