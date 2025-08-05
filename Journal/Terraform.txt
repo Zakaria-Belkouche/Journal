@@ -101,7 +101,7 @@ Terraform plan shows ONLY what will change.
 
 						Terraform Commands:
 
-terraform init		- Sets up work place. (Terraform block and provider block. Installs libaries/aws log in)
+terraform init		- Sets up work place. (Terraform block and provider block. Installs libaries/aws log in/backend)
 terraform plan		- preview changes terraform will make before they happen. See into the future.  
 			  Everything shown in plan refers to changes! Symbols: (+ create) (~ update) (- destroy)
 terraform apply		- Takes execution plan and applies it to infrastructure.
@@ -248,4 +248,119 @@ You can deploy the s3 bucket manually, and it doesn't even need to be imported a
 - Automatic locking: Many remote backends (like terraform cloud or s3 bucket + DynamoDB) offer state locking.
 - State locking prevents people working on the state file at the same time. 
 - Remote backends can automatically back up state file and provide encryption.
- 
+
+
+
+
+
+							Variables
+
+- Allows you to write cleaner, more dynamic code allowing you to manage different environments and setups. 
+- A way to paramaterise your configuration. Instead of hard coding into config files, can define values as variables
+- Makes your code more 'dry'. (Do not repeat yourself)
+- Variables are written in a seperate variables.tf file
+
+
+
+
+						Declaring Input Variables
+
+- Define Input variables to recieve value from user/command line/ variable files
+
+
+				---------------------------------------------------------------
+
+variable "instance_type" {
+  type = string				> Looking for string input
+  default = t3.micro			> The actual thing we want when we call on the variable.
+)
+
+				--------------------------------------------------------------
+
+
+Now variables can be specified in a 'variables.tf' file and tf will read them automatically while planning/applying.
+
+This is fine as it honestly. 
+
+However, if you reall want, best practice is actually using terraform.tfvars along with your variables.tf file.
+
+--------------------------------------------------------------------------------------------------------------
+						terraform.tfvars
+instance_type = "t3.micro"
+
+
+--------------------------------------------------------------------------------------------------------------
+
+
+
+
+						Local Variables
+
+
+Just used to save time. If values do not need to be configured externally, theres no reason to use input variables. 
+Instead we can just set local variables using a locals {} block to stay efficient/dry while configuring our .tf file.
+
+The preferred way to do it is to define multiple local variables all within a single locals {} block. Example:
+
+
+		-------------------------------------------------------------------------- 
+
+
+locals {
+  env           = "dev"
+  instance_name = "web-${local.env}"
+  region        = "us-east-1"
+  common_tags = {
+    Environment = local.env
+    Owner       = "DevOps"
+  }
+}
+
+
+		---------------------------------------------------------------------------
+
+
+
+
+
+						Output Variables
+
+
+- Used to display values after your entire terraform apply has run and been completed. 
+- This can be id's, ip's or other important information.
+- Useful for passing info to other configurations, automation tools or displaying them for your own reference.
+- To define output variable, we use an output block. 
+- In the output block u specify name of output, description, and value you want to output. 
+
+
+
+		----------------------------------------------------------------------------	
+
+
+output "instance_id" {
+  description = "The Id of the EC2 instance"
+  value = (resource.name.id goes here)			> make sure to use .id. Gives you a useful list too. 
+}
+
+
+		----------------------------------------------------------------------------
+
+
+- Use descriptive names so you know exactly what you are outputting.
+- Always include a description for variables so it's easily understandable. 
+- Use outputs to expose critical information for automation/manual intervention/chaining tf configs together. 
+- Be causious when outputting sensitive information... 
+
+
+
+
+							Varibale Hierarchy
+
+
+- How terraform reads and prioritises variables
+
+1. Command line flags
+2. TF_VAR Environment Variables 			> These are actual env variables set on your system (export)
+3. .tfvars Files					> Will override the default values
+4. Default Values					> Set in input variables
+
