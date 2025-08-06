@@ -101,7 +101,7 @@ Terraform plan shows ONLY what will change.
 
 						Terraform Commands:
 
-terraform init		- Sets up work place. (Terraform block and provider block. Installs libaries/aws log in/backend)
+terraform init		- Sets up work place. (Terraform block/provider block. libaries/aws log in/backend/modules)
 terraform plan		- preview changes terraform will make before they happen. See into the future.  
 			  Everything shown in plan refers to changes! Symbols: (+ create) (~ update) (- destroy)
 terraform apply		- Takes execution plan and applies it to infrastructure.
@@ -110,6 +110,8 @@ terraform destroy	- Safely and Efficiently tears down infrastructure managed by 
 			  Reads current config and state file to understand what it's managing. Then generates destroy
 			  plan. Can specify which sources to destroy. Will also wait for confirmation. 
 			  Terraform then updates state file to confirm resources have been destroyed. 
+terraform refresh	- updates the state file to match the current real world infrastructure. Ensures in sync. 	
+
 
 
 
@@ -364,3 +366,402 @@ output "instance_id" {
 3. .tfvars Files					> Will override the default values
 4. Default Values					> Set in input variables
 
+
+
+
+
+
+						Types of Variables
+
+
+
+There are simple variables as shown above and complex variables (which i've already investigated)
+
+Complex  variables involve multiple values all within the same variable. we utilise {} within the variable block
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+variable "example_list" {
+
+type = list(string)
+default = ["one","two" ...]
+
+}
+
+
+variable "example_map" {
+
+type = map(string)
+default = {
+foo = "bar"
+baz = "qux"
+
+}
+}
+
+
+variable "ec2_config" {
+  type = object({
+    ami           = string
+    instance_type = string
+    subnet_id     = string
+    key_name      = string
+    tags          = map(string)
+  })
+
+  default = {
+    ami           = "ami-0c55b159cbfafe1f0"
+    instance_type = "t3.micro"
+    subnet_id     = "subnet-abc123"
+    key_name      = "my-key"
+    tags = {
+      Name  = "example-instance"
+      Owner = "DevOps"
+    }
+  }
+}
+
+--------------------------------------------------------------------------------------------------------------
+
+
+
+
+							MODULES
+
+
+Modules are like reusable packages stored in subdirectories, each with their own input variables and configuration logic
+Instead of rewriting the same setup, we can call a module from our main .tf file, passing in values as needed.
+We can also override default variable values when calling a module — and those overrides will take precedence.
+This makes modules ideal for organizing, reusing, and scaling Terraform code across different environments or projects.
+
+
+- Improves re-usability
+- Dryness
+- Organisation
+- Consistency
+- Allow cross team/project collabaration
+- Package and re-use infrastructure code.
+- Perhaps use a module to enforce consistent SG's
+
+						What makes a good module?
+
+- flexible
+- well documented
+- easy to use
+- Simplicity
+- Output values
+- Avoid hardcoding values that might change between environments like instance types, regions etc. Pass in as variables.
+- Modules need to be focused on single responsibility.
+
+
+- Need to run a terraform init in order to initialize the modules. 
+--------------------------------------------------------------------------------------------------------------------
+						How to call a module:
+
+module "web_server" {
+  source        = "./modules/ec2_instance"			> Path to module
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t3.micro"
+  tags = {
+    Name  = "example-web"
+    Owner = "DevOps"
+  }
+}
+
+
+
+------------------------------------------------------------------------------------------------------------------ 
+
+
+
+
+						Advanced Terraform Topics
+
+
+
+							Local Stack
+
+LocalStack is a tool that lets you run a local version of AWS services on your own machine — without using a real AWS 
+account.
+
+Allows you to: Develop and test terraform, cloud apps, and automate scripts locally - WITH ZERO COST.
+
+It's basically an emulation tool so you can practice and make sure your terraform is correct before doing anything. 
+
+
+							How to make a Local Stack
+
+- First of all, a local stack is ran as a container. There is a public image which we can call and run. Here is how:
+
+- We run it using docker compose. 
+
+--------------------------------------------------------------------------------------------------------------------
+
+v-ersion: "3.8"
+
+se--rvices:
+
+  localstack:
+
+    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
+
+    image: localstack/localstack:2.3.2
+
+    ports:
+
+      - "4566:4566"            # LocalStack Gateway
+
+      - "4510-4559:4510-4559"  # external services port range
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+To make a local stack, you need to make sure to define the following endpoint in your terraform providers init code.
+
+required providers {
+  aws = {
+    source = "hashicorp/aws"
+    version = "~> 4.0"
+  }
+}
+
+required_versions = ">= 1.0"
+}
+
+provider "aws" {
+
+access_key	= "test"
+secret_key	= "test"
+region 		= "us-east-1"
+skip_credentials_validation = true
+skip_requesting_account_id  = true
+
+endpoints {
+
+ec2 = "http://localhost:4566"			> This is the important part. It is saying, when using ec2 resource, 
+	  }					  direct the request to port 4566  (where the container is listening)
+}
+
+
+--------------------------------------------------------------------------------------------------------------------
+						
+
+
+
+
+
+						THE ABSOLUTE FUNDEMENTALS END HERE
+	
+
+
+
+
+
+							The Count argument
+
+
+- Lets you spin up multiple identical resources (like instances) all within the same resource block. 
+- you just pass count in as an argument in the resource block. Very simple. Look below.
+
+--------------------------------------------------------------------------------------------------------------------
+
+resource "aws_instance" "example" {
+  count         = 3
+  ami           = "ami-044415bb13eee2391" 
+  instance_type = "t2.micro"
+
+
+--------------------------------------------------------------------------------------------------------------------
+??? from here until ???END lines may have been inserted/deleted
+
+							for_each loops
+
+
+- great for spinning up multiple resources of the same type but with different configurations 
+
+----------------------------------------------------------------------------------------------------------------
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+locals {
+  ec2_instances = {
+    dev     = "t2.micro"
+    staging = "t3.micro"
+    prod    = "t3.small"
+  }
+}
+
+resource "aws_instance" "ec2" {
+  for_each = local.ec2_instances		# loops over the map of values
+
+  ami           = "ami-044415bb13eee2391" 	
+  instance_type = each.value			# Defines the instance type for that region
+
+  tags = {
+    Name = "${each.key}-instance"
+  }
+}
+
+----------------------------------------------------------------------------------------------------------------
+						
+							MASTER UP TO HERE
+
+
+
+
+
+
+							rest i can take my time on.
+
+
+
+							coalesce function
+
+- Takes list of values and returns the first one which isn't null or an empty string ("")	
+- basically, if no string is passed through as argument and default is not set in variable, coalese will do it's thing.
+- set a generic value to use as a backup default. 
+- can combine with the lookup function to also search for a value. (look into this more if/when needed)
+
+example: name = coalesce(var.user_defined_name, "generic-name")
+
+
+
+							try function:
+
+- In Terraform, the try function evaluates each argument in order and returns the first one that doesn’t produce an 
+ error. It’s useful for setting fallback values when dealing with optional or error-prone expressions.
+- Once again, look into this further if required to.
+
+
+
+							merge function:
+
+- To combine multiple map's into 1. If you have default tags, always want resources + env tags in 1. 
+- Don't fully understand this tbh, but once again, look into when needed.  
+
+
+
+							Conditionals
+
+- Allow you to control the flow of terraform code based on certain conditions. 
+- ALlow you to exectue blocks depending on a value of a variable/resource attribute. 
+- Ok this one is important. Simple too. Look below
+
+----------------------------------------------------------------------------------------------------------------------
+
+Example 1: Instance type depends on the string value in environment variable
+
+variable "environment" {
+type = string
+default = "dev"								# Can also be set to prod. So dev/prod
+}
+
+resource "aws_instance" "conditional_instance" {
+ami = "ami-test"
+
+instance_type = var.envrionment == "prod" ? "t3.large" : "t2.micro"	# based on value of environment var.
+									# if prod then use t3.large, otherwise t2.micro
+
+----------------------------------------------------------------------------------------------------------------------
+
+Example 2: Wether or not to create an elastic ip, based on our variables. 
+
+
+variable "environment" {
+type = string
+default = "dev"                                                         
+}
+
+resource "aws_instance" "main" {
+ami = xyz
+instance_type = t2.micro
+}
+
+
+resource "aws_eip" "optional_eip" {
+
+count = var.environment == "prod" ? 1:0				# If env = prod create an elastic IP otherwise do not.
+
+instance = aws_instance.main.id					# where to add the elastic ip.
+}
+
+----------------------------------------------------------------------------------------------------------------------
+There is more to know about conditionals for dynamic configurations but I will cover it later.
+
+
+
+						Concatenation
+
+- A simple way to join 2 lists into 1 big list. 
+- Produces a single list. 
+
+locals {
+list_one = ["dev", "test"]
+list_two = ["prod", "staging"]
+merged_list = concat(local.list_one, local.list_two)		# concat command used here to join the lists. 
+}
+
+
+
+------------------------------------------------------------------------------------------------------------------
+
+							File Function
+
+Super useful tool for injecting entire config files/scripts into resource like user data without hardcoding into tf. 
+
+
+1. First of all, in your variables, you make a variable which points towards the script. 
+2. call  the variable in your resource block.
+---------------------------------------------------------------------------------------------------------------------
+
+variable "userdata_file" {
+
+type = string
+default = "${path.module}/user_data.sh			# The path to the script
+}
+
+resource "aws_instance" "file_example" {
+ami = "ami-test"
+instance_type = "t2.micro"
+
+user_Data = file (var.userdata_file)
+
+}
+---------------------------------------------------------------------------------------------------------------------
+
+							Lowercase/Uppercasing
+
+quick command used to make strings entirely lowercase or entirely uppercase. Just convenience. 
+ 
+
+
+
+
+						Can Function for conditional logic
+
+
+- If we are unsure if .tf code will work, we can use a can function to check.
+- If there are any mistakes in var string values, json format unreadable, can will give us a nice msg.
+- can even configure can to stop the tf run if there is a code failure. 
+
+
+------------------------------------------------------------------------------------------------------------------- 
+
+variable "possible_json" {
+type = string
+# default = " xyz "		# could be invalid
+}
+
+
+locals {
+decode_ok  = can(jsondecode(var.possible_json))
+final_value = local.decode_ok ? "Valid JSON!" : "Oops, invalid JSON, falling back."
+}
+
+-------------------------------------------------------------------------------------------------------------------
+
+				There is more knowledge that I will not cover at this current moment
