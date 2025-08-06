@@ -1,0 +1,218 @@
+								CI/CD
+
+
+
+
+CI/CD is good because it automates the process of building, testing, and delivering software, enabling faster, safer, 
+and more reliable releases.
+
+Smaller incremental changes to code reduces risks of big failures. 
+
+All team members work is integrated frequently. 
+
+
+
+- A powerful tool!!! It Helps us build, test and release software applications much faster and much more reliably. 
+
+- No more 'it works on my machine'. We will make sure it works everywhere!
+
+- Uses 'Github actions'
+
+- Automate development process, catch bugs early and deploy your applications with confidence.
+
+- Workflows * Pipelines    > SYNONYMOUS 
+
+
+
+							Introduction:
+
+
+							What is it?
+
+
+CI / CD = Continuous integration / Continuous deployment (or delivery)
+
+
+							
+							CI
+
+
+	
+CI: CI is the practice of frequently integrating code changes into a shared repository, where each integration is 
+    automatically built and tested. This way, we can find and catch errors quickly, making the whole development 
+    process smoother.
+
+- Catch bugs early
+- Ensure code is mergable and functional
+
+
+CI ends after code is validated. Once you are happy, you can send a merge request forawrd.  
+
+
+ONCE CODE HAS BEEN MERGED INTO MAIN BRANCH, THIS IS WHERE CD BEGINS.
+
+
+
+							CD
+
+
+Continuous Deployment (CD)
+- Automatically builds, tests, and deploys all the way to production
+- No manual approvals — every successful commit goes live (if tests pass)
+
+ 
+
+Continuous Delivery (CD)
+- Automatically builds, tests, and delivers code to a staging or pre-production environment
+- Manual approval is still required to deploy to production. 
+
+
+
+Stage			Continuous Integration		Continuous Delivery		Continuous Deployment
+
+
+Automated		build/test	✅		✅					✅
+
+Deploy to		staging		❌		✅					✅
+
+Deploy to 		production	❌		✅ (manual approval)		✅ (fully automated)
+
+Rollback/Monitoring	❌ (not part of CI)		✅ (optional/manual)		✅ (often automated)
+
+
+
+					When use Delivery and when use Deployment?
+
+- Regulated / High risk apps (medical industry) 				> Delivery. We want human approval
+
+- Apps that require fast iterations and have mature DevOps teams		> Deployment.
+ 
+
+
+
+						The ci/cd PIPELINE
+
+
+1. Developer pushes code to a feature branch
+2. ➜ CI pipeline starts
+    - Runs tests, linting, builds	# Once code pushed, it triggers automated build process. 
+    - CI passes ✅			# Code compiled, built, ran, tested. 
+					# When done system notifies if sucess or fail
+				
+3. Developer opens a Pull Request (PR)
+4. Team reviews and approves the PR
+5. Code is merged into main branch
+6. ➜ CD pipeline starts
+    - Builds production-ready artifact (e.g., Docker image)
+    - Deploys to staging or production
+    - Runs post-deploy tests or health checks
+
+7. Post-deploy tests and health checks run
+    - Smoke tests (e.g., "Does the app start?")
+    - Endpoint checks (e.g., "/health" or "/api/status")
+    - Integration tests (optional)
+    - Monitoring tool pings (Prometheus, CloudWatch, etc.)
+
+8. All checks pass ✅
+    - Deployment is marked as **successful**
+    - Monitoring confirms system is stable
+    - Notifications are sent (Slack, email, etc.)
+
+9. CD pipeline completes ✅
+    - Artifacts are stored/tagged (e.g., Docker image v1.3.2)
+    - Logs and metrics are archived
+    - Deployment status visible in dashboard (GitHub Actions, ArgoCD, Jenkins, etc.)
+
+10. Team is notified:
+    - "✅ Deployment successful to production"
+    - Links to logs, monitoring dashboards, and release notes		# MONITORING AND LOGGING VERY IMPORTANT
+
+
+
+							CI/CD Tools
+
+
+1. Gitlab CI/CD. 		# Integrated right into Github. If using github, then likely will be using Gitlab. 
+
+2. Jenkins			# Most popular CI/CD tool. Open source. Very powerful, can do anything. Complex.
+
+3. circleci			# Cloud based CI/CD tool. Fast and simple. Integrates well with github and bit bucket. 
+
+4. Travis CI			# Cloud based CI/CD. Integrates well with github. Simple and ease of use.
+
+5. Github Actions		# Integrated directly deeply into github. This will be my focus. 
+
+
+
+
+
+
+
+						Github Actions (In YAML files)
+
+
+
+
+
+
+- Once code is commited onto github this is where github actions kick in!
+
+- The github action workflow specifies what actions to take when certain events occur (like commit)
+
+- github actions are specified in a YAML file.
+
+						The github actions workflow
+
+  Step 1: Build the code. Compiling code and resolving dependencies
+  Step 2: Automated tests. Verify new code doesn't break anything. Any existing functinality not broken/features work.
+  Step 3: Test outcome checked. If test passes workflow moves onto next step. If fails, process stops and devs notified.
+  Step 4: If test+build successful, code is packaged. Usually it creates a new deploy version of product (docker img)
+  Step 5: Packaged and deployed. This can be to staging/testing environment or even direct to production
+  Step 6: Once pushed to production, you want to monitor and check logs to make sure everything is working well.  
+ 
+
+
+
+
+					Github Actions: Continuous integration
+
+
+- Automatically build and test code every time you push into repositary
+- Run unit test on every pull request. Make sure any new code doesn't break existing functuality
+
+
+					Github Actions: CD
+
+- After code passes all tests, github actions can automatically deploy to production or any other environment. 
+- Deploying application into cloud service like aws. Can be set to happen automatically.
+
+					Github Actions: Automation
+
+- Github actions can automate repetitive tasks in workflow like:
+- Managing product board operations: moving cards or tasks between columns on github project board based on issues/PR.
+
+
+
+						📦 What Is a Card?
+	
+A card is a visual representation of a GitHub Issue or Pull Request on a project board.
+
+Each issue or pull request can be turned into a card.
+
+Cards are placed into columns on a board to track progress.
+
+You can move cards manually or automate it using GitHub Actions.
+
+
+
+						🗂️ What Is a Board?
+
+A board is a project view — like a digital kanban board — used to organize tasks, issues, and PRs into different stages.
+
+
+Example: A Simple GitHub Project Board
+
+To Do 📝				 In Progress 🚧				Done ✅
+Issue #45: Fix login bug		PR #78: Add CI/CD		Issue #12: Update docs
+Issue #53: Add footer UI		     ...					...
+
