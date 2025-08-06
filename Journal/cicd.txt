@@ -216,3 +216,116 @@ To Do 📝				 In Progress 🚧				Done ✅
 Issue #45: Fix login bug		PR #78: Add CI/CD		Issue #12: Update docs
 Issue #53: Add footer UI		     ...					...
 
+
+
+
+
+							YAML Syntax
+
+
+
+
+- YAML (YAML ain't markup language)
+- YAML is the language of devops. (kubernetes, ci/cd, docker compose, etc.)
+- YAML is a way to write settings and instructions for programs in a format that’s easy for humans to read and write.
+
+YAML is very simple. It works with:
+
+ key : value
+
+ lists: 
+  - item 1
+  - item 2
+  - item 3
+
+Nested elemenents (using 2 spaces)
+
+parent:
+  child : value
+
+
+
+Essentially, yml is very easy to write. First of all it needs to be in a .yml or .yaml file. 
+
+secondly you can write in:
+
+key:value			lists			Nested elements
+					
+name: zak			fruits:			address:
+job: DevOps			- apple			  street: 123 Downing Street
+				- bannana		  city: London
+
+
+
+
+
+
+						Workflow/Pipeline Syntax
+
+
+
+You need a '.github/workflows/' directory. This is how github knows where the yaml files are located.
+
+
+1. Create the workflows directory:
+
+yourproject/.github/workflows/
+
+# This is where the workflows will go.  
+
+
+
+
+1. Create the workflows directory:
+
+yourproject/.github/workflows/
+
+# This is where the workflows will go. 
+
+
+1. Create the workflows directory:
+
+yourproject/.github/workflows/
+
+# This is where the workflows will go. 
+
+
+2. 						The YAML file structure:
+
+---------------------------------------------------------------------------------------------------------------
+
+
+name : Zaks CICD workflow			# helps you identify what workflow does
+
+on: [push]					# This is a trigger. Events that trigger the workflow (push/pullrequest)
+
+jobs: 						# Series of tasks that run as part of the workflow
+						# Independent tasks that run in parallel or sequentially. 
+						# Each job runs on a virtual machine (hence we choose the OS below)
+
+
+  build: 					# We have a single job called build
+
+    runs-on: ubuntu-latest 			# each job runs in own virtual environment and OS is configured
+
+    steps: 					# steps are individual tasks that will run in a sequence
+
+    - name: Checkout code			# arbitary. Helps humans understand what the step is doing. 
+      uses: actions/checkout@v2			# uses a pre-built action.  
+						# This action checks out the code from the repositary
+						# github workflows has marketplace of resuable/community created actions
+
+    - name: Set up Node.js			
+      uses: actions/setup-node@v2		# uses a pre-built action.
+      with:
+	node-version: '14'
+
+    - name: Install dependencies
+      run: npm install				# Runs a shell command directly. 
+
+    - name: Run tests
+      run: npm tests 
+
+
+-------------------------------------------------------------------------------------------------------------------
+
