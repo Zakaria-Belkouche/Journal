@@ -289,7 +289,7 @@ jobs: 						# Series of tasks that run as part of the workflow
 						# Each job runs on a virtual machine (hence we choose the OS below)
 
 
-  build: 					# We have a single job called build
+  build: 					# We have a single job called build. This is just a label. Arbitary.
 
     runs-on: ubuntu-latest 			# each job runs in own virtual environment and OS is configured
 
@@ -438,7 +438,7 @@ jobs:
 
 
 Custom actions are a great way to automate parts of your project that are specific to your project.
-
+Custom actions also allow for consistency. All projects go through same checks. Saves a lot of time/effort too!
 Can create these actions in javascipt, docker or other sources.
 
 
@@ -451,8 +451,102 @@ Can create these actions in javascipt, docker or other sources.
 
 How to create a custom action?
 
-1. Create a repositary to host custom action
+1. Create a repositary to host custom action.
 2. Define action metadata in action.yml file
 3. write the code for your action
 4. Public your action to github market place (Option. Makes it public)
 
+
+
+
+
+						CI/CD in the Real World!
+
+
+
+							Linting
+
+
+- Linting is the process of analysing your code for potential errors and enforcing coding standards. (spellchecker)
+- Maintains code quality. Catches syntax errors!
+- Tools to use: ESlint and pylint.
+
+
+
+						Automated Testing
+
+
+- Run tests on your code to ensure it works as expected. Write code that automatically tests your code.
+- Helps you catch bugs/issues early. Ensure code perfroms as expected
+- Tools  to use: junit and pytest
+
+
+
+
+					Deploying to different envrionments
+
+
+Typically deploy to 3 environments.
+
+- Development (where dev work happens.)
+
+- Staging (Stable environment that mirrors production as close as possible)
+
+- Production (The live environment where app is accessible by users)
+
+
+						Deployment strategies:
+
+
+Manual Deployment: Literally moving code from one place to another, manually. (Maybe human error)
+
+Automated Deployment: Uses scripts and tools to move code between environments.
+
+
+
+						Tools (for managing deployments)
+
+
+AWS: Ec2/ECS/EKS/Lambda
+
+
+
+						Security in CI/CD
+
+
+- Secure your secrets! (API Keys, passwords, tokens. Use github secrets or .gitignore)
+
+- Control access to repositaries and workflows. (Least privaledge principle). Role based access control. 
+
+- Scan for vulnerabilities. Use tools like dependabox, snake to check for vulnerabilties. 
+
+- Audit and Monitor. Always be watching for unusual/suspicious activity. 
+
+
+
+
+						Debugging workflow failures
+
+
+- You will encounter workflow failures! Here are some common isssues:
+
+1. Failed Tests
+2. Dependency Errors (Project relies on external libaries which have conflicts / are not installed)
+3. Configuration Errors (Issues in syntax. Spell check.)
+4. Permission Errors (Don't have correct permissions in repositary to perform certain actions)
+
+
+Solutions:
+
+1. Review logs
+2. Re-run jobs
+3. Update Dependencies
+4. Check Configuration
+
+
+
+
+						Manual Triggers with Github Actions
+
+
+- Allows workflows to be started manually via github actions ui. (Will learn this later)
