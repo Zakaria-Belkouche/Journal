@@ -275,21 +275,6 @@ yourproject/.github/workflows/
 
 
 
-
-1. Create the workflows directory:
-
-yourproject/.github/workflows/
-
-# This is where the workflows will go. 
-
-
-1. Create the workflows directory:
-
-yourproject/.github/workflows/
-
-# This is where the workflows will go. 
-
-
 2. 						The YAML file structure:
 
 ---------------------------------------------------------------------------------------------------------------
@@ -311,8 +296,8 @@ jobs: 						# Series of tasks that run as part of the workflow
     steps: 					# steps are individual tasks that will run in a sequence
 
     - name: Checkout code			# arbitary. Helps humans understand what the step is doing. 
-      uses: actions/checkout@v2			# uses a pre-built action.  
-						# This action checks out the code from the repositary
+      uses: actions/checkout@v2			# uses a pre-built action. This action is usually the first. Important  
+						# It downloads your code into VM so rest of workflow can access it.
 						# github workflows has marketplace of resuable/community created actions
 
     - name: Set up Node.js			
@@ -328,4 +313,146 @@ jobs: 						# Series of tasks that run as part of the workflow
 
 
 -------------------------------------------------------------------------------------------------------------------
+
+
+
+						Advanced Github Actions
+				(Conditionals/Expressions and Matrix builds / Parallel testing)
+
+-----------------------------------------------------------------------------------------------------------------------
+
+
+							Conditions
+
+- Control when a job/step should run based on a criteria. 
+
+- name: Run tests
+  run: python -m unittest discover		# This command only runs if previous steps succeeded. 
+  if : success()				# This is the condition. success () means only run if all previous
+						  steps succeeded.
+
+
+							Expressions
+
+
+- Perform calculations, Manipulate strings.
+- Let's you do more within your pipeline
+ 
+- name: Print branch name
+  run: echo The branch is ${{ github ref }} 	# ${{ }} this is the expression. Allows you to perform logic/use values.
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+
+						Matrix Builds and Parallel Testing
+
+
+- Allows you to run your github actions and therefore test across different environments. For example:
+- This speeds up tests by running the same job multiple times in parallel.
+- Code is very clear. Look below:
+
+------------------------------------------------------------------------------------------------------------------
+
+
+name: Matrix Build with OS and Python
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: [3.6, 3.7, 3.8, 3.9]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+
+						Secrets and Encrypted vars
+
+
+- Secrets are sensitive data/information that you do not want to expose in your codebase 
+- Secrets allow us to keep our sensitive data secure. 
+- Github will use secrets but will NEVER show them (will encrypt)
+
+						How to setup github secrets
+
+1. Go to github repositary
+2. click on "settings"
+3. On the left sidebar, click on "secrets"
+4. Clock on "New repository secret"
+5. Enter a name for your scret in the "Name"
+6. Enter the value of thee secret in the "Value" field. Finally, add the secret.
+7. Look at the example below at how to run a secret.
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Checkout code
+    uses: actions/checkout@v2
+    
+    - name: use secret in a script
+    run: echo "The secret is ${{ secrets.SecretName }}"		# Calling the secrets repositary directly. 
+    
+    - name: use secret as envrionment variable
+    run: echo "The secret is $MySecret"
+    env:
+      MySecret: ${{ secrets.SecretName }}			# Set up the env variable form secrets repositary
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+
+
+						
+
+					Reusable CI/CD actions for workflows
+
+- Re-usable units of code that automate specific tasks in pipeline.
+- This section is based around creating custom actions and resuing them throughout your workflow.
+- If you want, you can even make these workflows public/open source to help the community. 
+
+
+Custom actions are a great way to automate parts of your project that are specific to your project.
+
+Can create these actions in javascipt, docker or other sources.
+
+
+3 types of custom actions:
+
+- Javascript actions: Use node.js to run javascript code.
+- docker actions: ran in containers
+- custom actions: pieces that are re-usable
+
+
+How to create a custom action?
+
+1. Create a repositary to host custom action
+2. Define action metadata in action.yml file
+3. write the code for your action
+4. Public your action to github market place (Option. Makes it public)
 
